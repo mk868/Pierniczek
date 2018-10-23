@@ -152,7 +152,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = CreateColumn(newName, TypeEnum.Int);
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
 
             Rows = _scaleService.ChangeRange(Rows, column.Name, newColumn.Name, min, max);
             _columns.Add(newColumn);
@@ -176,7 +176,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = CreateColumn(newName, TypeEnum.Int);
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
 
             Rows = _classService.GroupAlphabetically(column.Name, newColumn.Name, Rows);
             _columns.Add(newColumn);
@@ -188,7 +188,7 @@ namespace Pierniczek.ViewModels
             return new ColumnModel()
             {
                 Name = name,
-                Type = TypeEnum.Int,
+                Type = type,
                 Use = true
             };
         }
@@ -209,7 +209,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = CreateColumn(newName, TypeEnum.Int);
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
 
             Rows = _classService.GroupByOrder(column.Name, newColumn.Name, Rows);
             _columns.Add(newColumn);
@@ -242,7 +242,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = CreateColumn(newName, TypeEnum.Int);
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
 
             Rows = _scaleService.Discretization(Rows, column.Name, newColumn.Name, ranges);
             _columns.Add(newColumn);

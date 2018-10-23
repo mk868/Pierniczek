@@ -69,7 +69,7 @@ namespace Pierniczek.Services
             return rows;
         }
 
-        private int? GetRange(IList<RangeModel> ranges, double value)
+        private int? GetRange(IList<RangeModel> ranges, decimal value)
         {
             for (var i = 0; i < ranges.Count; i++)
             {
@@ -98,9 +98,9 @@ namespace Pierniczek.Services
                     rangeNum = GetRange(ranges, (int)value);
                 }
                 else
-                    if (value is double)
+                    if (value is decimal)
                 {
-                    rangeNum = GetRange(ranges, (double)value);
+                    rangeNum = GetRange(ranges, (decimal)value);
                 }
 
                 if (rangeNum == null)

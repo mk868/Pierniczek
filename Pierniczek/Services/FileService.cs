@@ -22,10 +22,8 @@ namespace Pierniczek.Services
 
         private TypeEnum GetCellType(string value)
         {
-            if (Regex.IsMatch(value, @"^[\-]?[0-9]+$"))
-                return TypeEnum.Int;
-            if (Regex.IsMatch(value, @"^[\-]?[0-9]*[,.][0-9]+$"))
-                return TypeEnum.Double;
+            if (Regex.IsMatch(value, @"^[\-]?[0-9]*([,.][0-9]+)?$"))
+                return TypeEnum.Number;
             return TypeEnum.String;
         }
 
@@ -156,28 +154,18 @@ namespace Pierniczek.Services
 
         private object Convert(TypeEnum type, string value)
         {
-            if (type == TypeEnum.Int)
-            {
-                if (Int32.TryParse(value, out var ival))
-                {
-                    return ival;
-                }
-                return default(int);
-            }
-
-            if (type == TypeEnum.Double)
+            if (type == TypeEnum.Number)
             {
                 value = value.Replace('.', ',');
                 if (value.StartsWith(","))
                     value = "0" + value;
 
-                if (double.TryParse(value, out var dval))
+                if (decimal.TryParse(value, out var dval))
                 {
                     return dval;
                 }
-                return default(double);
+                return default(decimal);
             }
-
 
             return value;
         }

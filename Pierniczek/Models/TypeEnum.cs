@@ -9,7 +9,6 @@ namespace Pierniczek.Models
     public enum TypeEnum
     {
         String,
-        Int,
-        Double
+        Number
     }
 }

@@ -13,7 +13,7 @@ namespace Pierniczek.Models
         {
         }
 
-        public double Min { get; set; }
-        public double Max { get; set; }
+        public decimal Min { get; set; }
+        public decimal Max { get; set; }
     }
 }
