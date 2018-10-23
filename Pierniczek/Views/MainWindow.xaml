@@ -1,0 +1,43 @@
+﻿<catel:Window x:Class="Pierniczek.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pierniczek.Views"
+        xmlns:behaviors="clr-namespace:Pierniczek.Behaviors"
+        mc:Ignorable="d"
+        xmlns:catel="http://schemas.catelproject.com"
+        Title="Pierniczek app" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Ribbon Grid.Row="0" Margin="0,-22,0,0">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed">
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Files">
+                <RibbonGroup Header="File">
+                    <RibbonButton Label="Open file" Command="{Binding OpenFile}"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Actions">
+                <RibbonGroup >
+                    <RibbonMenuButton Label="String to int" >
+                        <RibbonMenuItem Header="Alphabetically" Command="{Binding GroupAlphabetically}" />
+                        <RibbonMenuItem Header="By Order" Command="{Binding GroupByOrder}"/>
+                    </RibbonMenuButton>
+                    <RibbonMenuItem Header="New Range" Command="{Binding NewRange}" />
+                    <RibbonMenuItem Header="Discretization" Command="{Binding Discretization}" />
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Rows}" AutoGenerateColumns="False" IsReadOnly="True"
+                  behaviors:DataGridColumnsBehavior.BindableColumns="{Binding Columns}">
+        </DataGrid>
+    </Grid>
+</catel:Window>

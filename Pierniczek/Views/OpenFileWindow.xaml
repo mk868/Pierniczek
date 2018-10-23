@@ -1,0 +1,56 @@
+﻿<catel:Window x:Class="Pierniczek.Views.OpenFileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pierniczek.Views"
+        xmlns:models="clr-namespace:Pierniczek.Models"
+        mc:Ignorable="d"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        xmlns:catel="http://schemas.catelproject.com"
+        Title="Open file" Height="450" Width="800">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="TypeEnum" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="models:TypeEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Open" Width="100" Command="{Binding Open}"/>
+                <Label Grid.Column="1" Content="{Binding FileName}"/>
+            </Grid>
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Columns}" AutoGenerateColumns="False" CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Use" Binding="{Binding Use}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding Type}" ItemsSource="{Binding Source={StaticResource TypeEnum}}" />
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Accept" Width="100" Command="{Binding Accept}"/>
+            </Grid>
+        </Grid>
+        <TextBox Grid.Column="1" TextWrapping="NoWrap" Text="{Binding FilePreview}"  IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+    </Grid>
+</catel:Window>
