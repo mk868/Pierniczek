@@ -152,12 +152,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = new ColumnModel()
-            {
-                Name = newName,
-                Type = TypeEnum.Int,
-                Use = true
-            };
+            var newColumn = CreateColumn(newName, TypeEnum.Int);
 
             Rows = _scaleService.ChangeRange(Rows, column.Name, newColumn.Name, min, max);
             _columns.Add(newColumn);
@@ -181,16 +176,21 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = new ColumnModel()
+            var newColumn = CreateColumn(newName, TypeEnum.Int);
+
+            Rows = _classService.GroupAlphabetically(column.Name, newColumn.Name, Rows);
+            _columns.Add(newColumn);
+            SetColumns(_columns);
+        }
+
+        private ColumnModel CreateColumn(string name, TypeEnum type)
+        {
+            return new ColumnModel()
             {
-                Name = newName,
+                Name = name,
                 Type = TypeEnum.Int,
                 Use = true
             };
-
-            Rows = _classService.GroupAlphabetically(column, newColumn, Rows);
-            _columns.Add(newColumn);
-            SetColumns(_columns);
         }
 
         private async Task OnGroupByOrderExecute()
@@ -209,14 +209,9 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = new ColumnModel()
-            {
-                Name = newName,
-                Type = TypeEnum.Int,
-                Use = true
-            };
+            var newColumn = CreateColumn(newName, TypeEnum.Int);
 
-            Rows = _classService.GroupByOrder(column, newColumn, Rows);
+            Rows = _classService.GroupByOrder(column.Name, newColumn.Name, Rows);
             _columns.Add(newColumn);
             SetColumns(_columns);
         }
@@ -247,12 +242,7 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var newColumn = new ColumnModel()
-            {
-                Name = newName,
-                Type = TypeEnum.Int,
-                Use = true
-            };
+            var newColumn = CreateColumn(newName, TypeEnum.Int);
 
             Rows = _scaleService.Discretization(Rows, column.Name, newColumn.Name, ranges);
             _columns.Add(newColumn);

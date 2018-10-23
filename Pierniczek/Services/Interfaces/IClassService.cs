@@ -9,7 +9,7 @@ namespace Pierniczek.Services.Interfaces
 {
     public interface IClassService
     {
-        IList<RowModel> GroupAlphabetically(ColumnModel strColumn, ColumnModel newColumn, IList<RowModel> rows);
-        IList<RowModel> GroupByOrder(ColumnModel strColumn, ColumnModel newColumn, IList<RowModel> rows);
+        IList<RowModel> GroupAlphabetically(string strColumn, string newColumn, IList<RowModel> rows);
+        IList<RowModel> GroupByOrder(string strColumn, string newColumn, IList<RowModel> rows);
     }
 }

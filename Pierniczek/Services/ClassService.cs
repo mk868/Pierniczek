@@ -35,9 +35,9 @@ namespace Pierniczek.Services
             return result;
         }
 
-        public IList<RowModel> GroupAlphabetically(ColumnModel strColumn, ColumnModel newColumn, IList<RowModel> rows)
+        public IList<RowModel> GroupAlphabetically(string strColumn, string newColumn, IList<RowModel> rows)
         {
-            var groups = GetGroups(strColumn.Name, rows);
+            var groups = GetGroups(strColumn, rows);
 
             groups = new SortedSet<string>(groups);
             
@@ -45,23 +45,23 @@ namespace Pierniczek.Services
 
             foreach(var row in rows)
             {
-                var gValue = row[strColumn.Name] as string;
-                row[newColumn.Name] = mapping[gValue];
+                var gValue = row[strColumn] as string;
+                row[newColumn] = mapping[gValue];
             }
 
             return rows;
         }
 
-        public IList<RowModel> GroupByOrder(ColumnModel strColumn, ColumnModel newColumn, IList<RowModel> rows)
+        public IList<RowModel> GroupByOrder(string strColumn, string newColumn, IList<RowModel> rows)
         {
-            var groups = GetGroups(strColumn.Name, rows);
+            var groups = GetGroups(strColumn, rows);
 
             var mapping = CreateMapping(groups);
 
             foreach (var row in rows)
             {
-                var gValue = row[strColumn.Name] as string;
-                row[newColumn.Name] = mapping[gValue];
+                var gValue = row[strColumn] as string;
+                row[newColumn] = mapping[gValue];
             }
 
             return rows;
