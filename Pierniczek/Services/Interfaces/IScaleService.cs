@@ -11,5 +11,7 @@ namespace Pierniczek.Services.Interfaces
     {
         IList<RowModel> ChangeRange(IList<RowModel> rows, string sourceColumn, string newColumn, double min, double max);
         IList<RowModel> Discretization(IList<RowModel> rows, string sourceColumn, string newColumn, IList<RangeModel> ranges);
+        IList<RowModel> Normalization(IList<RowModel> rows, string sourceColumn, string newColumn);
+        IList<RowModel> ShowProcent(IList<RowModel> rows, string sourceColumn, int percent);
     }
 }

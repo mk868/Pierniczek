@@ -86,6 +86,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -120,14 +121,24 @@
     <Compile Include="Services\Interfaces\IClassService.cs" />
     <Compile Include="Services\Interfaces\IFileService.cs" />
     <Compile Include="Services\ScaleService.cs" />
-    <Compile Include="ViewModels\ScatterWindowViewModel.cs" />
+	<Compile Include="ViewModels\PercentWindowViewModel.cs" />
+    <Compile Include="ViewModels\SetPercentWindowViewModel.cs" />
+	<Compile Include="ViewModels\ScatterWindowViewModel.cs" />
     <Compile Include="ViewModels\SetRangesDataWindowViewModel.cs" />
     <Compile Include="ViewModels\NewRangeDataWindowViewModel.cs" />
     <Compile Include="ViewModels\SelectColumnDataWindowViewModel.cs" />
     <Compile Include="ViewModels\NewColumnDataWindowViewModel.cs" />
     <Compile Include="ViewModels\OpenFileWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Page Include="Views\ScatterWindow.xaml">
+	<Page Include="Views\PercentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SetPercentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+	<Page Include="Views\ScatterWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -159,7 +170,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\ScatterWindow.xaml.cs">
+	<Compile Include="Views\PercentWindow.xaml.cs">
+      <DependentUpon>PercentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SetPercentWindow.xaml.cs">
+      <DependentUpon>SetPercentWindow.xaml</DependentUpon>
+    </Compile>
+	<Compile Include="Views\ScatterWindow.xaml.cs">
       <DependentUpon>ScatterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SetRangesDataWindow.xaml.cs">
@@ -209,7 +226,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
