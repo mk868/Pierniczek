@@ -61,6 +61,7 @@ namespace Pierniczek
             uiVisualizerService.Register<SelectColumnDataWindowViewModel, SelectColumnDataWindow>();
             uiVisualizerService.Register<NewRangeDataWindowViewModel, NewRangeDataWindow>();
             uiVisualizerService.Register<SetRangesDataWindowViewModel, SetRangesDataWindow>();
+            uiVisualizerService.Register<ScatterWindowViewModel, ScatterWindow>();
             //uiVisualizerService.Register<SourceConfigurationWindowViewModel, SourceConfigurationWindow>();
             //uiVisualizerService.Register<MessageDetailsViewModel, MessageDetailsView>();
 

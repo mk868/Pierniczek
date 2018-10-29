@@ -8,13 +8,13 @@
         mc:Ignorable="d"
         xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:catel="http://schemas.catelproject.com"
-        Title="Select column" Height="90.572" Width="358.581">
+        Title="{Binding Title}" Height="90.572" Width="358.581">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Content="Select column" Height="30"/>
-        <ListView Grid.Column="1" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}"/>
+        <ListView Grid.Column="1" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}" SelectionMode="Single"/>
     </Grid>
 </catel:DataWindow>

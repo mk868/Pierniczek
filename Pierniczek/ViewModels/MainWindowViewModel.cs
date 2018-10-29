@@ -37,6 +37,7 @@ namespace Pierniczek.ViewModels
             GroupByOrder = new TaskCommand(OnGroupByOrderExecute);
             NewRange = new TaskCommand(OnNewRangeExecute);
             Discretization = new TaskCommand(OnDiscretizationExecute);
+            Scatter = new TaskCommand(OnScatterExecute);
         }
 
         public IList<RowModel> Rows { get; private set; }
@@ -80,12 +81,14 @@ namespace Pierniczek.ViewModels
         }
 
 
-        private async Task<ColumnModel> SelectColumn(IList<ColumnModel> columns)
+        private async Task<ColumnModel> SelectColumn(IList<ColumnModel> columns, string title = null)
         {
             var typeFactory = this.GetTypeFactory();
 
             var selectColumnDataWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SelectColumnDataWindowViewModel>();
             selectColumnDataWindowViewModel.Columns = columns;
+            if (title != null)
+                selectColumnDataWindowViewModel.SetTitle(title);
 
             if (!await _uiVisualizerService.ShowDialogAsync(selectColumnDataWindowViewModel) ?? false)
             {
@@ -221,7 +224,7 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
 
-            var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
+            var column = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number).ToList());
             if (column == null)
             {
                 return;
@@ -249,11 +252,37 @@ namespace Pierniczek.ViewModels
             SetColumns(_columns);
         }
 
+        private async Task OnScatterExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+
+            var columnX = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
+            if (columnX == null)
+            {
+                return;
+            }
+
+            //TODO: fix
+            var columnY = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number && s.Name != columnX.Name).ToList(), "Y axis");
+            if (columnY == null)
+            {
+                return;
+            }
+
+            var scatterWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<ScatterWindowViewModel>();
+            scatterWindowViewModel.SetData(this.Rows, columnX.Name, columnY.Name);
+            if (!await _uiVisualizerService.ShowDialogAsync(scatterWindowViewModel) ?? false)
+            {
+                return;
+            }
+            
+        }
 
         public TaskCommand OpenFile { get; private set; }
         public TaskCommand GroupAlphabetically { get; private set; }
         public TaskCommand GroupByOrder { get; private set; }
         public TaskCommand NewRange { get; private set; }
         public TaskCommand Discretization { get; private set; }
+        public TaskCommand Scatter { get; private set; }
     }
 }

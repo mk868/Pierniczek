@@ -33,6 +33,7 @@
                     </RibbonMenuButton>
                     <RibbonMenuItem Header="New Range" Command="{Binding NewRange}" />
                     <RibbonMenuItem Header="Discretization" Command="{Binding Discretization}" />
+                    <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

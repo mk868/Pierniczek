@@ -18,8 +18,13 @@ namespace Pierniczek.ViewModels
     {
         public SelectColumnDataWindowViewModel()
         {
+            this.Title = "Select column";
         }
 
+        public void SetTitle(string title)
+        {
+            this.Title = title;
+        }
         public IList<ColumnModel> Columns { get; set; }
         public ColumnModel SelectedColumn { get; set; }
     }
