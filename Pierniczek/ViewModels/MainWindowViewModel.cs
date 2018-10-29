@@ -312,16 +312,18 @@ namespace Pierniczek.ViewModels
             {
                 return;
             }
-
-            //TODO: fix
-            var columnY = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number && s.Name != columnX.Name).ToList(), "Y axis");
+            
+            var columnY = await SelectColumn(_columns.Where(s => s.Name != columnX.Name).ToList(), "Y axis");
             if (columnY == null)
             {
                 return;
             }
 
             var scatterWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<ScatterWindowViewModel>();
-            scatterWindowViewModel.SetData(this.Rows, columnX.Name, columnY.Name);
+            if (columnY.Type == TypeEnum.Number)
+                scatterWindowViewModel.SetData(this.Rows, columnX.Name, columnY.Name);
+            else
+                scatterWindowViewModel.SetDataWithClasses(this.Rows, columnX.Name, columnY.Name);
             if (!await _uiVisualizerService.ShowDialogAsync(scatterWindowViewModel) ?? false)
             {
                 return;

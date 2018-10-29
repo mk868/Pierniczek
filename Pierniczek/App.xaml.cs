@@ -49,7 +49,7 @@ namespace Pierniczek
             serviceLocator.RegisterType<IFileService, FileService>();
             serviceLocator.RegisterType<IClassService, ClassService>();
             serviceLocator.RegisterType<IScaleService, ScaleService>();
-
+            serviceLocator.RegisterType<IColorService, ColorService>(RegistrationType.Singleton);
 
             // To auto-forward styles, check out Orchestra (see https://github.com/wildgums/orchestra)
             // StyleHelper.CreateStyleForwardersForDefaultStyles();
