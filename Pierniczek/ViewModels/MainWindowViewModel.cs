@@ -37,6 +37,8 @@ namespace Pierniczek.ViewModels
             GroupByOrder = new TaskCommand(OnGroupByOrderExecute);
             NewRange = new TaskCommand(OnNewRangeExecute);
             Discretization = new TaskCommand(OnDiscretizationExecute);
+			Normalization = new TaskCommand(OnNormalizationExecute);
+			ShowPercent = new TaskCommand(OnShowPercentExecute);
         }
 
         public IList<RowModel> Rows { get; private set; }
@@ -216,7 +218,6 @@ namespace Pierniczek.ViewModels
             SetColumns(_columns);
         }
 
-
         private async Task OnDiscretizationExecute()
         {
             var typeFactory = this.GetTypeFactory();
@@ -249,11 +250,62 @@ namespace Pierniczek.ViewModels
             SetColumns(_columns);
         }
 
+        private async Task OnNormalizationExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+			var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
+			if (column == null)
+			{
+				return;
+			}
+
+			var newName = await CreateColumn(column.Name + "_Normalization");
+			if (newName == null)
+			{
+				return;
+			}
+
+			var newColumn = CreateColumn(newName, TypeEnum.Number);
+
+			Rows = _scaleService.Normalization(Rows, column.Name, newColumn.Name);
+			_columns.Add(newColumn);
+			SetColumns(_columns);
+		}
+
+        private async Task OnShowPercentExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+			var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
+			if (column == null)
+			{
+				return;
+			}
+
+			var setPercentWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SetPercentWindowViewModel>();
+			if (!await _uiVisualizerService.ShowDialogAsync(setPercentWindowViewModel) ?? false)
+			{
+				return;
+			}
+
+			var newColumns = new List<ColumnModel> { CreateColumn("TOP", TypeEnum.Number), CreateColumn("BOTTOM", TypeEnum.Number) };
+
+			var percentViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PercentWindowViewModel>();
+			percentViewModel.Rows = _scaleService.ShowProcent(Rows, column.Name, setPercentWindowViewModel.Percent);
+			percentViewModel.SetColumns(newColumns);
+
+			if (!await _uiVisualizerService.ShowDialogAsync(percentViewModel) ?? false)
+			{
+				return;
+			}
+		}
+
 
         public TaskCommand OpenFile { get; private set; }
         public TaskCommand GroupAlphabetically { get; private set; }
         public TaskCommand GroupByOrder { get; private set; }
         public TaskCommand NewRange { get; private set; }
         public TaskCommand Discretization { get; private set; }
+        public TaskCommand Normalization { get; private set; }
+        public TaskCommand ShowPercent { get; private set; }
     }
 }
