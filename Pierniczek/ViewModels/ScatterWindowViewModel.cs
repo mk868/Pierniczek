@@ -45,7 +45,8 @@ namespace Pierniczek.ViewModels
                         StrokeThickness = 0,
                         MarkerSize = 3,
                         MarkerStroke = OxyColor.FromRgb(color.R, color.G, color.B),
-                        MarkerType = MarkerType.Diamond
+                        MarkerType = MarkerType.Diamond,
+                        Title = x
                     };
                 });
             
