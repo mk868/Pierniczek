@@ -33,13 +33,13 @@ namespace Pierniczek.ViewModels
             this._scaleService = scaleService;
 
             OpenFile = new TaskCommand(OnOpenFileExecute);
-            GroupAlphabetically = new TaskCommand(OnGroupAlphabeticallyExecute);
-            GroupByOrder = new TaskCommand(OnGroupByOrderExecute);
-            NewRange = new TaskCommand(OnNewRangeExecute);
-            Discretization = new TaskCommand(OnDiscretizationExecute);
-            Normalization = new TaskCommand(OnNormalizationExecute);
-            ShowPercent = new TaskCommand(OnShowPercentExecute);
-            Scatter = new TaskCommand(OnScatterExecute);
+            GroupAlphabetically = new TaskCommand(OnGroupAlphabeticallyExecute, DataOperationsCanExecute);
+            GroupByOrder = new TaskCommand(OnGroupByOrderExecute, DataOperationsCanExecute);
+            NewRange = new TaskCommand(OnNewRangeExecute, DataOperationsCanExecute);
+            Discretization = new TaskCommand(OnDiscretizationExecute, DataOperationsCanExecute);
+            Normalization = new TaskCommand(OnNormalizationExecute, DataOperationsCanExecute);
+            ShowPercent = new TaskCommand(OnShowPercentExecute, DataOperationsCanExecute);
+            Scatter = new TaskCommand(OnScatterExecute, DataOperationsCanExecute);
         }
 
         public IList<RowModel> Rows { get; private set; }
@@ -329,6 +329,11 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
+        }
+
+        private bool DataOperationsCanExecute()
+        {
+            return this.Rows != null;
         }
 
         public TaskCommand OpenFile { get; private set; }
