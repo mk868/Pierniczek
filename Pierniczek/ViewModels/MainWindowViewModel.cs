@@ -40,6 +40,7 @@ namespace Pierniczek.ViewModels
             Normalization = new TaskCommand(OnNormalizationExecute, DataOperationsCanExecute);
             ShowPercent = new TaskCommand(OnShowPercentExecute, DataOperationsCanExecute);
             Scatter = new TaskCommand(OnScatterExecute, DataOperationsCanExecute);
+            Knn = new TaskCommand(OnKnnExecute, DataOperationsCanExecute);
         }
 
         public IList<RowModel> Rows { get; private set; }
@@ -51,6 +52,10 @@ namespace Pierniczek.ViewModels
 
             foreach (var field in fields)
             {
+                if (!field.Use)
+                {
+                    continue;
+                }
                 var column = new DataGridTextColumn();
                 column.Header = field.Name;
                 column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
@@ -129,7 +134,7 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
 
-            var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type != TypeEnum.String).ToList());
             if (column == null)
             {
                 return;
@@ -169,7 +174,7 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
 
-            var column = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.String).ToList());
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.String).ToList());
             if (column == null)
             {
                 return;
@@ -202,7 +207,7 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
 
-            var column = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.String).ToList());
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.String).ToList());
             if (column == null)
             {
                 return;
@@ -225,7 +230,7 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
 
-            var column = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number).ToList());
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList());
             if (column == null)
             {
                 return;
@@ -256,64 +261,64 @@ namespace Pierniczek.ViewModels
         private async Task OnNormalizationExecute()
         {
             var typeFactory = this.GetTypeFactory();
-			var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
-			if (column == null)
-			{
-				return;
-			}
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList());
+            if (column == null)
+            {
+                return;
+            }
 
-			var newName = await CreateColumn(column.Name + "_Normalization");
-			if (newName == null)
-			{
-				return;
-			}
+            var newName = await CreateColumn(column.Name + "_Normalization");
+            if (newName == null)
+            {
+                return;
+            }
 
-			var newColumn = CreateColumn(newName, TypeEnum.Number);
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
 
-			Rows = _scaleService.Normalization(Rows, column.Name, newColumn.Name);
-			_columns.Add(newColumn);
-			SetColumns(_columns);
-		}
+            Rows = _scaleService.Normalization(Rows, column.Name, newColumn.Name);
+            _columns.Add(newColumn);
+            SetColumns(_columns);
+        }
 
         private async Task OnShowPercentExecute()
         {
             var typeFactory = this.GetTypeFactory();
-			var column = await SelectColumn(_columns.Where(s => s.Type != TypeEnum.String).ToList());
-			if (column == null)
-			{
-				return;
-			}
+            var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList());
+            if (column == null)
+            {
+                return;
+            }
 
-			var setPercentWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SetPercentWindowViewModel>();
-			if (!await _uiVisualizerService.ShowDialogAsync(setPercentWindowViewModel) ?? false)
-			{
-				return;
-			}
+            var setPercentWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SetPercentWindowViewModel>();
+            if (!await _uiVisualizerService.ShowDialogAsync(setPercentWindowViewModel) ?? false)
+            {
+                return;
+            }
 
-			var newColumns = new List<ColumnModel> { CreateColumn("TOP", TypeEnum.Number), CreateColumn("BOTTOM", TypeEnum.Number) };
+            var newColumns = new List<ColumnModel> { CreateColumn("TOP", TypeEnum.Number), CreateColumn("BOTTOM", TypeEnum.Number) };
 
-			var percentViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PercentWindowViewModel>();
-			percentViewModel.Rows = _scaleService.ShowProcent(Rows, column.Name, setPercentWindowViewModel.Percent);
-			percentViewModel.SetColumns(newColumns);
+            var percentViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PercentWindowViewModel>();
+            percentViewModel.Rows = _scaleService.ShowProcent(Rows, column.Name, setPercentWindowViewModel.Percent);
+            percentViewModel.SetColumns(newColumns);
 
-			if (!await _uiVisualizerService.ShowDialogAsync(percentViewModel) ?? false)
-			{
-				return;
-			}
-		}
+            if (!await _uiVisualizerService.ShowDialogAsync(percentViewModel) ?? false)
+            {
+                return;
+            }
+        }
 
 
         private async Task OnScatterExecute()
         {
             var typeFactory = this.GetTypeFactory();
 
-            var columnX = await SelectColumn(_columns.Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
+            var columnX = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
             if (columnX == null)
             {
                 return;
             }
-            
-            var columnY = await SelectColumn(_columns.Where(s => s.Name != columnX.Name).ToList(), "Y axis");
+
+            var columnY = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Name != columnX.Name).ToList(), "Y axis");
             if (columnY == null)
             {
                 return;
@@ -325,6 +330,36 @@ namespace Pierniczek.ViewModels
             else
                 scatterWindowViewModel.SetDataWithClasses(this.Rows, columnX.Name, columnY.Name);
             if (!await _uiVisualizerService.ShowDialogAsync(scatterWindowViewModel) ?? false)
+            {
+                return;
+            }
+        }
+
+        private async Task OnKnnExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+
+            var columnX = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
+            if (columnX == null)
+            {
+                return;
+            }
+
+            var columnY = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).Where(s => s.Name != columnX.Name).ToList(), "Y axis");
+            if (columnY == null)
+            {
+                return;
+            }
+
+            var columnClass = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.String).ToList(), "decision class");
+            if (columnClass == null)
+            {
+                return;
+            }
+
+            var knnWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<KnnWindowViewModel>();
+            knnWindowViewModel.SetData(this.Rows, columnX.Name, columnY.Name, columnClass.Name);
+            if (!await _uiVisualizerService.ShowDialogAsync(knnWindowViewModel) ?? false)
             {
                 return;
             }
@@ -344,5 +379,6 @@ namespace Pierniczek.ViewModels
         public TaskCommand Normalization { get; private set; }
         public TaskCommand ShowPercent { get; private set; }
         public TaskCommand Scatter { get; private set; }
+        public TaskCommand Knn { get; private set; }
     }
 }
