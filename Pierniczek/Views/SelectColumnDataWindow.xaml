@@ -15,6 +15,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Content="Select column" Height="30"/>
-        <ListView Grid.Column="1" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}" SelectionMode="Single"/>
+        <ComboBox Grid.Column="1" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}" />
     </Grid>
 </catel:DataWindow>
