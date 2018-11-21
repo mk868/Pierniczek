@@ -20,11 +20,13 @@ namespace Pierniczek.ViewModels
     {
         private readonly IColorService _colorService;
         private readonly IMessageService _messageService;
+        private readonly IClassificationService _classificationService;
 
-        public KnnWindowViewModel(IColorService colorService, IMessageService messageService)
+        public KnnWindowViewModel(IColorService colorService, IMessageService messageService, IClassificationService classificationService)
         {
             this._colorService = colorService;
             this._messageService = messageService;
+            this._classificationService = classificationService;
             Methods = new List<KnnMethodEnum>();
             Methods.Add(KnnMethodEnum.EuclideanDistance);
             Methods.Add(KnnMethodEnum.Manhattan);
@@ -35,21 +37,25 @@ namespace Pierniczek.ViewModels
         public PlotModel ScatterModel { get; set; }
         public IList<KnnMethodEnum> Methods { get; set; }
         public KnnMethodEnum? SelectedMethod { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
+        public decimal X { get; set; }
+        public decimal Y { get; set; }
         public int K { get; set; } = 3;
 
-        private IList<Tuple<DataPoint, string>> allPoints = new List<Tuple<DataPoint, string>>();
+        
+        public IList<RowModel> Rows { get; set; }
+        public string ColumnX { get; set; }
+        public string ColumnY { get; set; }
+        public string ColumnClass { get; set; }
 
-        public void SetData(IList<RowModel> rows, string columnX, string columnY, string columnClass)
+        public void Init()
         {
             var tmp = new PlotModel
             {
-                Title = $"Scatter plot Y: {columnY}, X: {columnX}"
+                Title = $"Scatter plot Y: {ColumnY}, X: {ColumnX}"
             };
 
-            var lines = rows
-                .Select(s => s[columnClass] as string)
+            var lines = Rows
+                .Select(s => s[ColumnClass] as string)
                 .Distinct()
                 .ToDictionary(x => x, x =>
                 {
@@ -65,16 +71,15 @@ namespace Pierniczek.ViewModels
                 });
 
 
-            foreach (var row in rows)
+            foreach (var row in Rows)
             {
-                var x = (decimal)row[columnX];
-                var y = (decimal)row[columnY];
-                var className = row[columnClass] as string;
+                var x = (decimal)row[ColumnX];
+                var y = (decimal)row[ColumnY];
+                var className = row[ColumnClass] as string;
 
                 var line = lines[className];
                 var point = new DataPoint((double)x, (double)y);
                 line.Points.Add(point);
-                allPoints.Add(new Tuple<DataPoint, string>(point, className));
             }
 
             foreach (var line in lines)
@@ -84,48 +89,12 @@ namespace Pierniczek.ViewModels
             this.ScatterModel = tmp;
         }
 
-        private double CalculateDistance(double x1, double y1, double x2, double y2, KnnMethodEnum method)//TODO: replace enum by class, move calculateDistance to this class
-        {
-            if(method == KnnMethodEnum.EuclideanDistance)
-            {
-                return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
-            }
-            if (method == KnnMethodEnum.Manhattan)
-            {
-                return Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
-            }
-            throw new NotImplementedException();
-        }
+        
 
         private async Task OnSearchExecute()
         {
-            List<Tuple<DataPoint, string, double>> found = new List<Tuple<DataPoint, string, double>>();
-            //point, className, distance
+            var result = _classificationService.Knn(Rows, ColumnX, ColumnY, ColumnClass, K, SelectedMethod.Value, X, Y);
 
-            foreach(var point in allPoints)
-            {
-                double distance = CalculateDistance(X, Y, point.Item1.X, point.Item1.Y, SelectedMethod.Value);
-                found.Add(new Tuple<DataPoint, string, double>(
-                    point.Item1,
-                    point.Item2,
-                    distance
-                    ));
-            }
-
-            found = found.OrderBy(o => o.Item3).ToList();
-
-            while(found.Count > K)
-            {
-                found.RemoveAt(found.Count - 1);
-            }
-
-            var result = found
-                .GroupBy(g => g.Item2)
-                .ToDictionary(d => d.Key, d => d.Count())
-                .OrderByDescending(o => o.Value)
-                .Select(s => s.Key)
-                .FirstOrDefault();
-            
             await _messageService.ShowInformationAsync("Class: " + result);
         }
 

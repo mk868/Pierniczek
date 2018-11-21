@@ -358,7 +358,11 @@ namespace Pierniczek.ViewModels
             }
 
             var knnWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<KnnWindowViewModel>();
-            knnWindowViewModel.SetData(this.Rows, columnX.Name, columnY.Name, columnClass.Name);
+            knnWindowViewModel.Rows = this.Rows;
+            knnWindowViewModel.ColumnX = columnX.Name;
+            knnWindowViewModel.ColumnY = columnY.Name;
+            knnWindowViewModel.ColumnClass = columnClass.Name;
+            knnWindowViewModel.Init();
             if (!await _uiVisualizerService.ShowDialogAsync(knnWindowViewModel) ?? false)
             {
                 return;

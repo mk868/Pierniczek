@@ -116,9 +116,11 @@
     <Compile Include="Models\KnnMethodEnum.cs" />
     <Compile Include="Models\RowModel.cs" />
     <Compile Include="Models\TypeEnum.cs" />
+    <Compile Include="Services\ClassificationService.cs" />
     <Compile Include="Services\ClassService.cs" />
     <Compile Include="Services\ColorService.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\Interfaces\IClassificationService.cs" />
     <Compile Include="Services\Interfaces\IColorService.cs" />
     <Compile Include="Services\Interfaces\IScaleService.cs" />
     <Compile Include="Services\Interfaces\IClassService.cs" />

@@ -25,6 +25,9 @@ namespace Pierniczek.ViewModels
 
             Open = new TaskCommand(OnOpenExecute);
             Accept = new TaskCommand(OnAcceptExecute);
+            SelectAll = new TaskCommand(OnSelectAllExecute);
+            UnselectAll = new TaskCommand(OnUnselectAllExecute);
+            ToggleSelection = new TaskCommand(OnToggleSelectionExecute);
         }
 
 
@@ -53,8 +56,35 @@ namespace Pierniczek.ViewModels
             await this.SaveAndCloseViewModelAsync();
         }
 
+        private async Task OnSelectAllExecute()
+        {
+            foreach(var column in this.Columns)
+            {
+                column.Use = true;
+            }
+        }
+
+        private async Task OnUnselectAllExecute()
+        {
+            foreach (var column in this.Columns)
+            {
+                column.Use = false;
+            }
+        }
+
+        private async Task OnToggleSelectionExecute()
+        {
+            foreach (var column in this.Columns)
+            {
+                column.Use = !column.Use;
+            }
+        }
+
         public TaskCommand Open { get; private set; }
         public TaskCommand Accept { get; private set; }
+        public TaskCommand SelectAll { get; private set; }
+        public TaskCommand UnselectAll { get; private set; }
+        public TaskCommand ToggleSelection { get; private set; }
 
     }
 }
