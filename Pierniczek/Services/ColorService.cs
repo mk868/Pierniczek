@@ -10,34 +10,34 @@ namespace Pierniczek.Services
     public class ColorService : IColorService
     {
         private Random _random = new Random();
-        private List<Color> _predefinedColors = new List<Color>{
-            new Color(0xFF0000),
-            new Color(0x00FF00),
-            new Color(0x0000FF),
-            new Color(0x00FFFF),
-            new Color(0xFF00FF),
-            new Color(0xFFFF00),
-            new Color(0x880000),
-            new Color(0x008800),
-            new Color(0x000088),
-            new Color(0x008888),
-            new Color(0x880088),
-            new Color(0x888800),
+        private List<BaseColor> _predefinedColors = new List<BaseColor>{
+            new BaseColor(0xFF0000),
+            new BaseColor(0x00FF00),
+            new BaseColor(0x0000FF),
+            new BaseColor(0x00FFFF),
+            new BaseColor(0xFF00FF),
+            new BaseColor(0xFFFF00),
+            new BaseColor(0x880000),
+            new BaseColor(0x008800),
+            new BaseColor(0x000088),
+            new BaseColor(0x008888),
+            new BaseColor(0x880088),
+            new BaseColor(0x888800),
         };
 
-        private Dictionary<string, Color> _colors;
+        private Dictionary<string, BaseColor> _colors;
 
         public ColorService()
         {
-            _colors = new Dictionary<string, Color>();
+            _colors = new Dictionary<string, BaseColor>();
         }
 
-        public Color GetUniqueColorByName(string name)
+        public BaseColor GetUniqueColorByName(string name)
         {
             if (_colors.ContainsKey(name))
                 return _colors[name];
 
-            Color color;
+            BaseColor color;
 
             if (_predefinedColors.Count > 0)
             {
@@ -46,7 +46,7 @@ namespace Pierniczek.Services
             }
             else
             {
-                color = new Color(_random.Next());
+                color = new BaseColor(_random.Next());
             }
 
             _colors[name] = color;

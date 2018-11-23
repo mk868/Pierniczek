@@ -36,6 +36,7 @@
 					<RibbonMenuItem Header="Normalization" Command="{Binding Normalization}" />
 					<RibbonMenuItem Header="ShowProcent" Command="{Binding ShowPercent}" />
                     <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
+                    <RibbonMenuItem Header="Plot3D" Command="{Binding Plot3D}" />
                     <RibbonMenuItem Header="K-nn" Command="{Binding Knn}" />
                 </RibbonGroup>
             </RibbonTab>

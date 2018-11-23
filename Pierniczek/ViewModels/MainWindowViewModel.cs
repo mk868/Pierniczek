@@ -40,6 +40,7 @@ namespace Pierniczek.ViewModels
             Normalization = new TaskCommand(OnNormalizationExecute, DataOperationsCanExecute);
             ShowPercent = new TaskCommand(OnShowPercentExecute, DataOperationsCanExecute);
             Scatter = new TaskCommand(OnScatterExecute, DataOperationsCanExecute);
+            Plot3D = new TaskCommand(OnPlot3DExecute);//TODO: , DataOperationsCanExecute);
             Knn = new TaskCommand(OnKnnExecute, DataOperationsCanExecute);
         }
 
@@ -335,6 +336,49 @@ namespace Pierniczek.ViewModels
             }
         }
 
+        private async Task OnPlot3DExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+
+            var columnX = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
+            if (columnX == null)
+            {
+                return;
+            }
+
+            var columnY = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).Where(s => s.Name != columnX.Name).ToList(), "Y axis");
+            if (columnY == null)
+            {
+                return;
+            }
+
+            var columnZ = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).Where(s => s.Name != columnX.Name).Where(s => s.Name != columnY.Name).ToList(), "Z axis");
+            if (columnZ == null)
+            {
+                return;
+            }
+
+            var columnClass = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.String).ToList(), "Class");
+            if (columnClass == null)
+            {
+                return;
+            }
+
+            var plot3dWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<Plot3dWindowViewModel>();
+            plot3dWindowViewModel.ColumnX = columnX.Name;
+            plot3dWindowViewModel.ColumnY = columnY.Name;
+            plot3dWindowViewModel.ColumnZ = columnZ.Name;
+            plot3dWindowViewModel.ColumnClass = columnClass.Name;
+            plot3dWindowViewModel.Rows = this.Rows;
+            plot3dWindowViewModel.Init();
+
+            if (!await _uiVisualizerService.ShowDialogAsync(plot3dWindowViewModel) ?? false)
+            {
+                return;
+            }
+        }
+
+
         private async Task OnKnnExecute()
         {
             var typeFactory = this.GetTypeFactory();
@@ -383,6 +427,7 @@ namespace Pierniczek.ViewModels
         public TaskCommand Normalization { get; private set; }
         public TaskCommand ShowPercent { get; private set; }
         public TaskCommand Scatter { get; private set; }
+        public TaskCommand Plot3D { get; private set; }
         public TaskCommand Knn { get; private set; }
     }
 }

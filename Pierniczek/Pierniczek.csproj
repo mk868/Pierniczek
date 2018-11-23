@@ -126,8 +126,12 @@
     <Compile Include="Services\Interfaces\IClassService.cs" />
     <Compile Include="Services\Interfaces\IFileService.cs" />
     <Compile Include="Services\ScaleService.cs" />
+    <Compile Include="Sphere\ColorPoint3D.cs" />
+    <Compile Include="Sphere\RoundMesh3D.cs" />
+    <Compile Include="Sphere\SphereGeometry3D.cs" />
     <Compile Include="ViewModels\PercentWindowViewModel.cs" />
     <Compile Include="ViewModels\KnnWindowViewModel.cs" />
+    <Compile Include="ViewModels\Plot3dWindowViewModel.cs" />
     <Compile Include="ViewModels\SetPercentWindowViewModel.cs" />
     <Compile Include="ViewModels\ScatterWindowViewModel.cs" />
     <Compile Include="ViewModels\SetRangesDataWindowViewModel.cs" />
@@ -141,6 +145,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\KnnWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Plot3dWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -185,6 +193,9 @@
     </Compile>
     <Compile Include="Views\KnnWindow.xaml.cs">
       <DependentUpon>KnnWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Plot3dWindow.xaml.cs">
+      <DependentUpon>Plot3dWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SetPercentWindow.xaml.cs">
       <DependentUpon>SetPercentWindow.xaml</DependentUpon>
