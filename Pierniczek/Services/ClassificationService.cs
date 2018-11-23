@@ -1,10 +1,12 @@
-﻿using Pierniczek.Models;
+﻿using Accord.Math;
+using Pierniczek.Models;
 using Pierniczek.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Pierniczek.Services
 {
@@ -15,12 +17,22 @@ namespace Pierniczek.Services
             List<Tuple<RowModel, decimal>> found = new List<Tuple<RowModel, decimal>>();
             //point, className, distance
 
+
+            var distances = CalculateDistances(
+                rows
+                    .Select(s => new Tuple<decimal, decimal>((decimal)s[xColumn], (decimal)s[yColumn]))
+                    .ToList(),
+                new Tuple<decimal, decimal>(xValue, yValue),
+                method
+                );
+
+            int i = 0;
             foreach (var row in rows)
             {
                 var rowX = (decimal)row[xColumn];
                 var rowY = (decimal)row[yColumn];
 
-                decimal distance = CalculateDistance(xValue, yValue, rowX, rowY, method);
+                decimal distance = distances[i++];
                 found.Add(new Tuple<RowModel, decimal>(
                     row,
                     distance
@@ -44,17 +56,77 @@ namespace Pierniczek.Services
             return result;
         }
 
-        private decimal CalculateDistance(decimal x1, decimal y1, decimal x2, decimal y2, KnnMethodEnum method)//TODO: replace enum by class, move calculateDistance to this class
+        public Dictionary<int, double> KnnLeaveOneOut(IList<RowModel> rows, string xColumn, string yColumn, string classColumn, int kMin, int kMax, KnnMethodEnum method)
         {
-            if (method == KnnMethodEnum.EuclideanDistance)
+            var result = new Dictionary<int, double>();
+
+            for (var k = kMin; k <= kMax; k++)
             {
-                return (decimal)Math.Sqrt(Math.Pow((double)x1 - (double)x2, 2) + Math.Pow((double)y1 - (double)y2, 2));
+                var count = rows.Count;
+                double found = 0;
+
+                foreach (var row in rows)
+                {
+                    var rowX = (decimal)row[xColumn];
+                    var rowY = (decimal)row[yColumn];
+                    var rowClass = row[classColumn] as string;
+
+                    var limitedRows = rows.Where(r => r != row).ToList();
+
+                    var foundClass = this.Knn(limitedRows, xColumn, yColumn, classColumn, k, method, rowX, rowY);
+                    if (foundClass == rowClass)
+                    {
+                        found++;
+                    }
+                }
+
+                result[k] = 1.0 * found / count;
             }
-            if (method == KnnMethodEnum.Manhattan)
-            {
-                return Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
-            }
-            throw new NotImplementedException();
+
+            return result;
         }
+
+
+
+        private List<decimal> CalculateDistances(List<Tuple<decimal, decimal>> values, Tuple<decimal, decimal> p2, KnnMethodEnum method)
+        {
+            var result = new List<decimal>();
+
+            foreach (var p1 in values)
+            {
+                if (method == KnnMethodEnum.EuclideanDistance)
+                {
+                    var distance = (decimal)Math.Sqrt(Math.Pow((double)p1.Item1 - (double)p2.Item1, 2) + Math.Pow((double)p1.Item2 - (double)p2.Item2, 2));
+                    result.Add(distance);
+                    continue;
+                }
+
+                if (method == KnnMethodEnum.Manhattan)
+                {
+                    var distance = Math.Abs(p1.Item1 - p2.Item1) + Math.Abs(p1.Item2 - p2.Item2);
+                    result.Add(distance);
+                    continue;
+                }
+
+                if (method == KnnMethodEnum.Infinity)
+                {
+                    var distance = Math.Max(Math.Abs(p1.Item1 - p2.Item1), Math.Abs(p1.Item2 - p2.Item2));
+                    result.Add(distance);
+                    continue;
+                }
+
+                if (method == KnnMethodEnum.Mahalanobis)
+                {
+                    var distance = (decimal)Distance.Mahalanobis(new double[] { (double)p1.Item1, (double)p1.Item2 }, new double[] { (double)p2.Item1, (double)p2.Item2 }, new double[,] { });
+                    result.Add(distance);
+                    continue;
+                }
+
+                throw new NotImplementedException();
+            }
+
+            return result;
+        }
+
     }
 }

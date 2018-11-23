@@ -14,5 +14,7 @@ namespace Pierniczek.Services.Interfaces
 
         IList<ColumnModel> GenerateColumns(string filePath);
         IList<RowModel> GetRows(string filePath, IList<ColumnModel> columns);
+
+        void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows);
     }
 }

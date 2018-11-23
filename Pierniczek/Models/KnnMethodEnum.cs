@@ -10,6 +10,8 @@ namespace Pierniczek.Models
     public enum KnnMethodEnum
     {
         EuclideanDistance,
-        Manhattan
+        Manhattan,
+        Infinity,
+        Mahalanobis
     }
 }

@@ -23,6 +23,7 @@
             <RibbonTab Header="Files">
                 <RibbonGroup Header="File">
                     <RibbonButton Label="Open file" Command="{Binding OpenFile}"/>
+                    <RibbonButton Label="Save file" Command="{Binding SaveFile}"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Actions">
@@ -38,6 +39,7 @@
                     <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
                     <RibbonMenuItem Header="Plot3D" Command="{Binding Plot3D}" />
                     <RibbonMenuItem Header="K-nn" Command="{Binding Knn}" />
+                    <RibbonMenuItem Header="K-nn leave-one-out" Command="{Binding KnnLOO}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

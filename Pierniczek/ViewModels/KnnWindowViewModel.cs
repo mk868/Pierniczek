@@ -30,6 +30,8 @@ namespace Pierniczek.ViewModels
             Methods = new List<KnnMethodEnum>();
             Methods.Add(KnnMethodEnum.EuclideanDistance);
             Methods.Add(KnnMethodEnum.Manhattan);
+            Methods.Add(KnnMethodEnum.Infinity);
+            Methods.Add(KnnMethodEnum.Mahalanobis);
 
             Search = new TaskCommand(OnSearchExecute, SearchCanExecute);
         }

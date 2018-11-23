@@ -77,7 +77,7 @@ namespace Pierniczek.Services
             return result;
         }
 
-        
+
         //TODO: move to extension method
         private string GetNextLine(StreamReader reader)
         {
@@ -112,7 +112,7 @@ namespace Pierniczek.Services
 
                     if (line == null)
                         break;
-                    
+
                     if (columns == null)
                     {
                         columns = SplitLine(line);
@@ -198,8 +198,8 @@ namespace Pierniczek.Services
                     }
 
                     var row = new RowModel();
-                    
-                    for(var i = 0; i < columns.Count && i < cells.Length; i++)
+
+                    for (var i = 0; i < columns.Count && i < cells.Length; i++)
                     {
                         var value = cells[i];
                         var column = columns[i];
@@ -212,6 +212,53 @@ namespace Pierniczek.Services
             }
 
             return result;
+        }
+
+        public void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows)
+        {
+
+            using (var fs = File.CreateText(filePath))
+            {
+                fs.WriteLine(string.Join("\t", columns.Select(s => s.Name).ToArray()));
+
+                foreach (var row in rows)
+                {
+                    var objs = new List<string>();
+
+                    foreach (var column in columns)
+                    {
+                        var rowValue = row[column.Name];
+
+                        if (rowValue is string)
+                        {
+                            objs.Add(rowValue as string);
+                            continue;
+                        }
+
+                        if (rowValue is decimal)
+                        {
+                            objs.Add(((decimal)rowValue).ToString());
+                            continue;
+                        }
+
+                        if (rowValue is double)
+                        {
+                            objs.Add(((double)rowValue).ToString());
+                            continue;
+                        }
+
+                        if (rowValue is int)
+                        {
+                            objs.Add(((int)rowValue).ToString());
+                            continue;
+                        }
+                        throw new NotImplementedException("not known type");
+                    }
+
+                    fs.WriteLine(string.Join("\t", objs.ToArray()));
+                }
+            }
+
         }
     }
 }

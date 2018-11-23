@@ -23,7 +23,7 @@ namespace Pierniczek.Services
 				var value = (decimal)row[sourceColumn];
 				decimal newValue = 0;
                 
-			    newValue = (value - realMin) * (max - min) / realMax + min;
+			    newValue = (value - realMin) / realMax * (max - min)  + min;
 
 				row[newColumn] = newValue;
 			}
@@ -101,7 +101,7 @@ namespace Pierniczek.Services
 			{
 				var value = row[sourceColumn];
 
-				row[newColumn] = (Convert.ToDouble(value) - mean) / variation;
+				row[newColumn] = (decimal)((Convert.ToDouble(value) - mean) / variation);
 			}
 
 			return rows;
