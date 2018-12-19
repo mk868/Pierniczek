@@ -23,14 +23,18 @@ namespace Pierniczek.ViewModels
         private readonly IMessageService _messageService;
         private readonly IClassService _classService;
         private readonly IScaleService _scaleService;
+        private readonly IClassificationService _classificationService;
 
-        public MainWindowViewModel(IUIVisualizerService uiVisualizerService, IFileService fileService, IMessageService messageService, IClassService classService, IScaleService scaleService)
+        public MainWindowViewModel(IUIVisualizerService uiVisualizerService, IFileService fileService, IMessageService messageService, IClassService classService, IScaleService scaleService,
+            IClassificationService classificationService
+            )
         {
             this._uiVisualizerService = uiVisualizerService;
             this._fileService = fileService;
             this._messageService = messageService;
             this._classService = classService;
             this._scaleService = scaleService;
+            this._classificationService = classificationService;
 
             OpenFile = new TaskCommand(OnOpenFileExecute);
             SaveFile = new TaskCommand(OnSaveFileExecute, DataOperationsCanExecute);
@@ -44,6 +48,7 @@ namespace Pierniczek.ViewModels
             Plot3D = new TaskCommand(OnPlot3DExecute);//TODO: , DataOperationsCanExecute);
             Knn = new TaskCommand(OnKnnExecute, DataOperationsCanExecute);
             KnnLOO = new TaskCommand(OnKnnLOOExecute, DataOperationsCanExecute);
+            KGroup = new TaskCommand(OnKGroupExecute, DataOperationsCanExecute);
         }
 
         public IList<RowModel> Rows { get; private set; }
@@ -462,6 +467,47 @@ namespace Pierniczek.ViewModels
             }
         }
 
+        private async Task OnKGroupExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+
+            var columnX = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList(), "X axis");
+            if (columnX == null)
+            {
+                return;
+            }
+
+            var columnY = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).Where(s => s.Name != columnX.Name).ToList(), "Y axis");
+            if (columnY == null)
+            {
+                return;
+            }
+
+            var newName = await CreateColumn("New_KDecision");
+            if (newName == null)
+            {
+                return;
+            }
+
+            var selectMethodViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SelectKGroupDistanceMethodDataWindowViewModel>();
+            if (!await _uiVisualizerService.ShowDialogAsync(selectMethodViewModel) ?? false)
+            {
+                return;
+            }
+
+            var kInputDataWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<KInputDataWindowViewModel>();
+            if (!await _uiVisualizerService.ShowDialogAsync(kInputDataWindowViewModel) ?? false)
+            {
+                return;
+            }
+
+            var newColumn = CreateColumn(newName, TypeEnum.Number);
+
+            _classificationService.KGroup(columnX.Name, columnY.Name, newName, selectMethodViewModel.SelectedMethod, kInputDataWindowViewModel.KValue, Rows);
+            _columns.Add(newColumn);
+            SetColumns(_columns);
+        }
+
 
         private bool DataOperationsCanExecute()
         {
@@ -480,5 +526,6 @@ namespace Pierniczek.ViewModels
         public TaskCommand Plot3D { get; private set; }
         public TaskCommand Knn { get; private set; }
         public TaskCommand KnnLOO { get; private set; }
+        public TaskCommand KGroup { get; private set; }
     }
 }

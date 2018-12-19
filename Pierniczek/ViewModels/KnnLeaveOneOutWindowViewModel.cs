@@ -27,18 +27,18 @@ namespace Pierniczek.ViewModels
             this._colorService = colorService;
             this._messageService = messageService;
             this._classificationService = classificationService;
-            Methods = new List<KnnMethodEnum>();
-            Methods.Add(KnnMethodEnum.EuclideanDistance);
-            Methods.Add(KnnMethodEnum.Manhattan);
-            Methods.Add(KnnMethodEnum.Infinity);
-            Methods.Add(KnnMethodEnum.Mahalanobis);
+            Methods = new List<DistanceMeasureMethodEnum>();
+            Methods.Add(DistanceMeasureMethodEnum.Euclidean);
+            Methods.Add(DistanceMeasureMethodEnum.Manhattan);
+            Methods.Add(DistanceMeasureMethodEnum.Infinity);
+            Methods.Add(DistanceMeasureMethodEnum.Mahalanobis);
 
             Execute = new TaskCommand(OnExecuteExecute, ExecuteCanExecute);
         }
 
         public PlotModel ScatterModel { get; set; }
-        public IList<KnnMethodEnum> Methods { get; set; }
-        public KnnMethodEnum? SelectedMethod { get; set; }
+        public IList<DistanceMeasureMethodEnum> Methods { get; set; }
+        public DistanceMeasureMethodEnum? SelectedMethod { get; set; }
 
 
         public IList<RowModel> Rows { get; set; }

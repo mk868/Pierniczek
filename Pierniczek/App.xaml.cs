@@ -68,6 +68,8 @@ namespace Pierniczek
             uiVisualizerService.Register<KnnWindowViewModel, KnnWindow>();
             uiVisualizerService.Register<KnnLeaveOneOutWindowViewModel, KnnLeaveOneOutWindow>();
             uiVisualizerService.Register<Plot3dWindowViewModel, Plot3dWindow>();
+            uiVisualizerService.Register<SelectKGroupDistanceMethodDataWindowViewModel, SelectKGroupDistanceMethodDataWindow>();
+            uiVisualizerService.Register<KInputDataWindowViewModel, KInputDataWindow>();
             //uiVisualizerService.Register<SourceConfigurationWindowViewModel, SourceConfigurationWindow>();
             //uiVisualizerService.Register<MessageDetailsViewModel, MessageDetailsView>();
 

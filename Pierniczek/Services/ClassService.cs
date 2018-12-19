@@ -26,7 +26,7 @@ namespace Pierniczek.Services
         {
             var result = new Dictionary<string, int>();
             int i = 1;
-            foreach(var group in groups)
+            foreach (var group in groups)
             {
                 result.Add(group, i);
                 i++;
@@ -40,10 +40,10 @@ namespace Pierniczek.Services
             var groups = GetGroups(strColumn, rows);
 
             groups = new SortedSet<string>(groups);
-            
+
             var mapping = CreateMapping(groups);
 
-            foreach(var row in rows)
+            foreach (var row in rows)
             {
                 var gValue = row[strColumn] as string;
                 row[newColumn] = mapping[gValue];

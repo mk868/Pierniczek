@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Pierniczek.Models
 {
-    public enum KnnMethodEnum
+    public enum DistanceMeasureMethodEnum
     {
-        EuclideanDistance,
+        Euclidean,
         Manhattan,
         Infinity,
-        Mahalanobis
+        Mahalanobis,
+        l1
     }
 }
