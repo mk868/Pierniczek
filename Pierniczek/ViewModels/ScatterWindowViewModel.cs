@@ -19,26 +19,38 @@ namespace Pierniczek.ViewModels
     public class ScatterWindowViewModel : ViewModelBase
     {
         private readonly IColorService _colorService;
+        private DataModel DataModel { get; set; }
 
-        public ScatterWindowViewModel(IColorService colorService)
+        public ScatterWindowViewModel(DataModel data, IColorService colorService)
         {
             this._colorService = colorService;
+
+            ColumnX = new SelectColumnModel(data.Columns.Where(c => c.Type == TypeEnum.Number).ToList(), "X axis");
+            ColumnY = new SelectColumnModel(data.Columns, "Y axis");
+            DataModel = data;
+
+            Generate = new TaskCommand(OnGenerateExecute, GenerateCanExecute);
         }
 
+
+        public SelectColumnModel ColumnX { get; set; }
+        public SelectColumnModel ColumnY { get; set; }
         public PlotModel ScatterModel { get; set; }
 
-        public void SetDataWithClasses(IList<RowModel> rows, string columnX, string columnY)
+        public void SetDataWithClasses()
         {
-            var tmp = new PlotModel
-            {
-                Title = $"Scatter plot Y: {columnY}, X: {columnX}"
-            };
+            var columnX = ColumnX.SelectedColumn.Name;
+            var columnY = ColumnY.SelectedColumn.Name;
 
-            var i = 0;
-            var lines = rows
+            var tmp = new PlotModel();
+            tmp.Title = $"Scatter plot Y: {columnY}, X: {columnX}";
+
+            //create line per class
+            var lines = DataModel.Rows
                 .Select(s => s[columnY] as string)
                 .Distinct()
-                .ToDictionary(x => x, x => {
+                .ToDictionary(x => x, x =>
+                {
                     var color = _colorService.GetUniqueColorByName(x);
                     return new LineSeries
                     {
@@ -49,13 +61,14 @@ namespace Pierniczek.ViewModels
                         Title = x
                     };
                 });
-            
-            var rowValues = rows.GroupBy(x =>
-                new { xVal = (decimal)x[columnX], yClass = x[columnY] as string }
+
+            var rowValues = DataModel.Rows
+                .GroupBy(x =>
+                    new { xVal = (decimal)x[columnX], yClass = x[columnY] as string }
             ) //hardcore ;)
                 .ToDictionary(x => new ValueTuple<decimal, string>(x.Key.xVal, x.Key.yClass), x => x.Count());
 
-            foreach (var row in rows)
+            foreach (var row in DataModel.Rows)
             {
                 var x = (decimal)row[columnX];
                 var yclass = row[columnY] as string;
@@ -71,12 +84,14 @@ namespace Pierniczek.ViewModels
             this.ScatterModel = tmp;
         }
 
-        public void SetData(IList<RowModel> rows, string columnX, string columnY)
+        public void SetData()
         {
-            var tmp = new PlotModel
-            {
-                Title = $"Scatter plot Y: {columnY}, X: {columnX}"
-            };
+            var columnX = ColumnX.SelectedColumn.Name;
+            var columnY = ColumnY.SelectedColumn.Name;
+
+            var tmp = new PlotModel();
+            tmp.Title = $"Scatter plot Y: {columnY}, X: {columnX}";
+            
             var s1 = new LineSeries
             {
                 StrokeThickness = 0,
@@ -85,7 +100,7 @@ namespace Pierniczek.ViewModels
                 MarkerType = MarkerType.Diamond
             };
 
-            foreach (var row in rows)
+            foreach (var row in DataModel.Rows)
             {
                 var x = (decimal)row[columnX];
                 var y = (decimal)row[columnY];
@@ -96,5 +111,22 @@ namespace Pierniczek.ViewModels
             tmp.Series.Add(s1);
             this.ScatterModel = tmp;
         }
+
+        private async Task OnGenerateExecute()
+        {
+            if (ColumnY.SelectedColumn.Type == TypeEnum.Number)
+                SetData();
+            else
+                SetDataWithClasses();
+        }
+
+
+        private bool GenerateCanExecute()
+        {
+            return ColumnX.SelectedColumn != null &&
+                ColumnY.SelectedColumn != null;
+        }
+
+        public TaskCommand Generate { get; private set; }
     }
 }

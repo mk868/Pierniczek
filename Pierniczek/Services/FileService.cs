@@ -12,8 +12,7 @@ namespace Pierniczek.Services
 {
     public class FileService : IFileService
     {
-        public const int MaxLines = 7;
-
+        public const int DefaultMaxLines = 7;
 
         private string[] SplitLine(string line)
         {
@@ -76,9 +75,7 @@ namespace Pierniczek.Services
 
             return result;
         }
-
-
-        //TODO: move to extension method
+        
         private string GetNextLine(StreamReader reader)
         {
             for (; !reader.EndOfStream;)
@@ -98,57 +95,24 @@ namespace Pierniczek.Services
         }
 
 
-
-        public IList<ColumnModel> GenerateColumns(string filePath)
-        {
-            string[] columns = null;
-            string[] values = null;
-
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                for (; !reader.EndOfStream;)
-                {
-                    var line = GetNextLine(reader);
-
-                    if (line == null)
-                        break;
-
-                    if (columns == null)
-                    {
-                        columns = SplitLine(line);
-                    }
-                    else if (values == null)
-                    {
-                        values = SplitLine(line);
-                        break;
-                    }
-                }
-            }
-
-            if (columns == null || values == null)
-                return null;
-
-            return GenerateColumns(columns, values);
-        }
-
-        public string PreviewFile(string filePath)
-        {
-            return PreviewFile(filePath, MaxLines);
-        }
-
         public string PreviewFile(string filePath, int lines)
         {
             var result = new StringBuilder();
 
             using (StreamReader reader = new StreamReader(filePath))
             {
-                for (var i = 0; i < MaxLines && !reader.EndOfStream; i++)
+                for (var i = 0; i < lines && !reader.EndOfStream; i++)
                 {
                     result.AppendLine(reader.ReadLine());
                 }
             }
 
             return result.ToString();
+        }
+
+        public string PreviewFile(string filePath)
+        {
+            return this.PreviewFile(filePath, DefaultMaxLines);
         }
 
 
@@ -170,21 +134,59 @@ namespace Pierniczek.Services
             return value;
         }
 
-        public IList<RowModel> GetRows(string filePath, IList<ColumnModel> columns)
-        {
-            var result = new List<RowModel>();
+       
 
+        public void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows)
+        {
+            //REMOVE!!!
+        }
+
+        public void Save(string filePath, DataModel data)
+        {
+            using (var fs = File.CreateText(filePath))
+            {
+                fs.WriteLine(string.Join("\t", data.Columns.Select(s => s.Name).ToArray()));
+
+                foreach (var row in data.Rows)
+                {
+                    var objs = new List<string>();
+
+                    foreach (var column in data.Columns)
+                    {
+                        var rowValue = row[column.Name];
+
+                        if (column.Type == TypeEnum.String)
+                        {
+                            objs.Add(rowValue as string);
+                            continue;
+                        }
+
+                        if (column.Type == TypeEnum.Number)
+                        {
+                            objs.Add(((decimal)rowValue).ToString());
+                            continue;
+                        }
+
+                        throw new NotImplementedException("not known type");
+                    }
+
+                    fs.WriteLine(string.Join("\t", objs.ToArray()));
+                }
+            }
+        }
+
+
+
+        public DataModel ReloadRows(string filePath, DataModel dataModel)
+        {
+            dataModel.Rows.Clear();
             bool headerSkipped = false;
 
             using (StreamReader reader = new StreamReader(filePath))
             {
-                for (; !reader.EndOfStream;)
+                string line;
+                while((line = GetNextLine(reader)) != null)
                 {
-                    var line = GetNextLine(reader);
-
-                    if (line == null)
-                        break;
-
                     var cells = SplitLine(line);
 
                     if (!headerSkipped)
@@ -199,66 +201,63 @@ namespace Pierniczek.Services
 
                     var row = new RowModel();
 
-                    for (var i = 0; i < columns.Count && i < cells.Length; i++)
+                    for (var i = 0; i < dataModel.Columns.Count && i < cells.Length; i++)
                     {
                         var value = cells[i];
-                        var column = columns[i];
+                        var column = dataModel.Columns[i];
 
                         row[column.Name] = Convert(column.Type, value);
                     }
 
-                    result.Add(row);
+                    dataModel.Rows.Add(row);
                 }
             }
+
+            return dataModel;
+        }
+
+      
+
+        public DataModel LoadDefinitions(string filePath)
+        {
+            string[] columns = null;
+            string[] values = null;
+
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = GetNextLine(reader)) != null)
+                {
+                    if (columns == null)
+                    {
+                        columns = SplitLine(line);
+                        continue;
+                    }
+
+                    if (values == null)
+                    {
+                        values = SplitLine(line);
+                        break;
+                    }
+                }
+            }
+
+            if (columns == null || values == null)
+                return null;
+
+            var result = new DataModel();
+            GenerateColumns(columns, values)
+                .ForEach(c => result.Columns.Add(c));
 
             return result;
         }
 
-        public void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows)
+        public DataModel Load(string filePath)
         {
-
-            using (var fs = File.CreateText(filePath))
-            {
-                fs.WriteLine(string.Join("\t", columns.Select(s => s.Name).ToArray()));
-
-                foreach (var row in rows)
-                {
-                    var objs = new List<string>();
-
-                    foreach (var column in columns)
-                    {
-                        var rowValue = row[column.Name];
-
-                        if (rowValue is string)
-                        {
-                            objs.Add(rowValue as string);
-                            continue;
-                        }
-
-                        if (rowValue is decimal)
-                        {
-                            objs.Add(((decimal)rowValue).ToString());
-                            continue;
-                        }
-
-                        if (rowValue is double)
-                        {
-                            objs.Add(((double)rowValue).ToString());
-                            continue;
-                        }
-
-                        if (rowValue is int)
-                        {
-                            objs.Add(((int)rowValue).ToString());
-                            continue;
-                        }
-                        throw new NotImplementedException("not known type");
-                    }
-
-                    fs.WriteLine(string.Join("\t", objs.ToArray()));
-                }
-            }
-
+            var result = this.LoadDefinitions(filePath);
+            return this.ReloadRows(filePath, result);
         }
+
+        
     }
 }

@@ -26,10 +26,22 @@ namespace Pierniczek.ViewModels
         public Point3D CameraPosition { get; set; }
         public Model3DCollection Points { get; set; }
 
-        public Plot3dWindowViewModel(IColorService colorService)
+        public SelectColumnModel ColumnX { get; set; }
+        public SelectColumnModel ColumnY { get; set; }
+        public SelectColumnModel ColumnZ { get; set; }
+        public SelectColumnModel ColumnClass { get; set; }
+
+        private DataModel DataModel { get; set; }
+
+        public Plot3dWindowViewModel(DataModel data, IColorService colorService)
         {
             this._colorService = colorService;
             CameraPosition = new Point3D(0, 0, -100);
+
+            ColumnX = new SelectColumnModel(data.Columns.Where(c => c.Type == TypeEnum.Number).ToList(), "X axis");
+            ColumnY = new SelectColumnModel(data.Columns.Where(c => c.Type == TypeEnum.Number).ToList(), "Y axis");
+            ColumnZ = new SelectColumnModel(data.Columns.Where(c => c.Type == TypeEnum.Number).ToList(), "Z axis");
+            ColumnClass = new SelectColumnModel(data.Columns, "Class");
 
             CameraUp = new TaskCommand(OnCameraUpExecute);
             CameraDown = new TaskCommand(OnCameraDownExecute);
@@ -39,6 +51,9 @@ namespace Pierniczek.ViewModels
             ZoomOut = new TaskCommand(OnZoomOutExecute);
 
             Points = new Model3DCollection();
+
+            Generate = new TaskCommand(OnGenerateExecute, GenerateCanExecute);
+            DataModel = data;
         }
 
 
@@ -91,24 +106,22 @@ namespace Pierniczek.ViewModels
         public TaskCommand CameraRight { get; private set; }
         public TaskCommand ZoomOut { get; private set; }
         public TaskCommand ZoomIn { get; private set; }
+        public TaskCommand Generate { get; private set; }
 
-
-
-
-        public string ColumnX { get; internal set; }
-        public string ColumnY { get; internal set; }
-        public string ColumnZ { get; internal set; }
-        public string ColumnClass { get; internal set; }
-        public IList<RowModel> Rows { get; internal set; }
-
-        internal void Init()
+        private async Task OnGenerateExecute()
         {
-            foreach (var row in Rows)
+            var columnX = ColumnX.SelectedColumn.Name;
+            var columnY = ColumnY.SelectedColumn.Name;
+            var columnZ = ColumnZ.SelectedColumn.Name;
+            var columnClass = ColumnClass.SelectedColumn.Name;
+
+            this.Points.Clear();
+            foreach (var row in DataModel.Rows)
             {
-                var x = (decimal)row[ColumnX];
-                var y = (decimal)row[ColumnY];
-                var z = (decimal)row[ColumnZ];
-                var className = (string)row[ColumnClass];
+                var x = (decimal)row[columnX];
+                var y = (decimal)row[columnY];
+                var z = (decimal)row[columnZ];
+                var className = ColumnClass.SelectedColumn.Type == TypeEnum.String ? (string)row[columnClass] : ((decimal)row[columnClass]).ToString();
                 var classColor = _colorService.GetUniqueColorByName(className);
 
                 var colorPoint3D = new ColorPoint3D();
@@ -119,6 +132,15 @@ namespace Pierniczek.ViewModels
 
                 this.Points.Add(colorPoint3D.GetGeometryModel3D());
             }
+        }
+
+
+        private bool GenerateCanExecute()
+        {
+            return ColumnX.SelectedColumn != null &&
+                ColumnY.SelectedColumn != null &&
+                ColumnZ.SelectedColumn != null &&
+                ColumnClass.SelectedColumn != null;
         }
     }
 }

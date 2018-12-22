@@ -15,11 +15,26 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <local:SelectColumnView Grid.Column="0" DataContext="{Binding ColumnX}"/>
+            <local:SelectColumnView Grid.Column="1" DataContext="{Binding ColumnY}"/>
+            <local:SelectColumnView Grid.Column="2" DataContext="{Binding ColumnZ}"/>
+            <local:SelectColumnView Grid.Column="3" DataContext="{Binding ColumnClass}"/>
+            <Button Grid.Column="4" Content="Generate" Margin="5px 0" Command="{Binding Generate}" />
+        </Grid>
 
-        <Viewport3D Grid.Column="1">
+        <Viewport3D Grid.Column="1" Grid.Row="1">
             <Viewport3D.Camera>
                 <PerspectiveCamera x:Name="myCamera" Position="{Binding CameraPosition, FallbackValue='0, 0, -100'}" 
                       LookDirection="0 0 1" 
@@ -69,7 +84,7 @@
             </Viewport3D.Children>
 
         </Viewport3D>
-        <Grid Grid.Column="0" Grid.Row="1">
+        <Grid Grid.Column="0" Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -84,8 +99,8 @@
             <Button Grid.Column="1" Grid.Row="2" Content="▼" Command="{Binding CameraDown}"/>
             <Button Grid.Column="0" Grid.Row="1" Content="◀" Command="{Binding CameraLeft}"/>
             <Button Grid.Column="2" Grid.Row="1" Content="▶" Command="{Binding CameraRight}"/>
-            <Button Grid.Column="2" Grid.Row="0" Content="↗" Command="{Binding ZoomIn}"/>
-            <Button Grid.Column="0" Grid.Row="2" Content="↙" Command="{Binding ZoomOut}"/>
+            <Button Grid.Column="2" Grid.Row="0" Content="+" Command="{Binding ZoomIn}"/>
+            <Button Grid.Column="0" Grid.Row="2" Content="-" Command="{Binding ZoomOut}"/>
         </Grid>
     </Grid>
 </catel:Window>

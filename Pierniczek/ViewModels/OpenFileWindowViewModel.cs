@@ -31,7 +31,7 @@ namespace Pierniczek.ViewModels
         }
 
 
-        public IList<ColumnModel> Columns { get; set; }
+        public DataModel Data { get; set; }
         public string FilePreview { get; set; }
         public string FilePath { get; private set; }
         public string FileName { get; private set; }
@@ -45,7 +45,7 @@ namespace Pierniczek.ViewModels
             {
                 var filePath = openFileService.FileName;
                 FilePreview = _fileService.PreviewFile(filePath);
-                Columns = _fileService.GenerateColumns(filePath);
+                Data = _fileService.LoadDefinitions(filePath);
                 FileName = Path.GetFileName(filePath);
                 FilePath = filePath;
             }
@@ -58,7 +58,7 @@ namespace Pierniczek.ViewModels
 
         private async Task OnSelectAllExecute()
         {
-            foreach(var column in this.Columns)
+            foreach(var column in this.Data.Columns)
             {
                 column.Use = true;
             }
@@ -66,7 +66,7 @@ namespace Pierniczek.ViewModels
 
         private async Task OnUnselectAllExecute()
         {
-            foreach (var column in this.Columns)
+            foreach (var column in this.Data.Columns)
             {
                 column.Use = false;
             }
@@ -74,7 +74,7 @@ namespace Pierniczek.ViewModels
 
         private async Task OnToggleSelectionExecute()
         {
-            foreach (var column in this.Columns)
+            foreach (var column in this.Data.Columns)
             {
                 column.Use = !column.Use;
             }
@@ -86,5 +86,12 @@ namespace Pierniczek.ViewModels
         public TaskCommand UnselectAll { get; private set; }
         public TaskCommand ToggleSelection { get; private set; }
 
+        public DataModel LoadData()
+        {
+            if (FilePath == null || Data == null)
+                return null;
+
+            return _fileService.ReloadRows(FilePath, Data);
+        }
     }
 }

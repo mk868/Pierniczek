@@ -11,10 +11,11 @@ namespace Pierniczek.Services.Interfaces
     {
         string PreviewFile(string filePath);
         string PreviewFile(string filePath, int lines);
-
-        IList<ColumnModel> GenerateColumns(string filePath);
-        IList<RowModel> GetRows(string filePath, IList<ColumnModel> columns);
-
-        void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows);
+        
+        
+        void Save(string filePath, DataModel data);
+        DataModel Load(string filePath);
+        DataModel LoadDefinitions(string filePath);
+        DataModel ReloadRows(string filePath, DataModel dataModel);
     }
 }

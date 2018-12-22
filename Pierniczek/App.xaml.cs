@@ -8,10 +8,10 @@ using Pierniczek.Services;
 using Pierniczek.Services.Interfaces;
 using Pierniczek.ViewModels;
 using Pierniczek.Views;
+using Pierniczek.Views.Shared;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -56,7 +56,8 @@ namespace Pierniczek
             // StyleHelper.CreateStyleForwardersForDefaultStyles();
 
             var uiVisualizerService = serviceLocator.ResolveType<IUIVisualizerService>();
-            uiVisualizerService.Register<MainWindowViewModel, MainWindow>();
+            uiVisualizerService.Register<DataWindowViewModel, DataWindow>();
+            //uiVisualizerService.Register<MainWindowViewModel, MainWindow>();
             uiVisualizerService.Register<OpenFileWindowViewModel, OpenFileWindow>();
             uiVisualizerService.Register<NewColumnDataWindowViewModel, NewColumnDataWindow>();
             uiVisualizerService.Register<SelectColumnDataWindowViewModel, SelectColumnDataWindow>();
@@ -77,6 +78,8 @@ namespace Pierniczek
 
 
             var viewModelLocator = serviceLocator.ResolveType<IViewModelLocator>();
+            viewModelLocator.Register<DataWindow, DataWindowViewModel>();
+
             //viewModelLocator.Register<RuleWindow, RuleWindowViewModel>();
 
             Log.Info("Calling base.OnStartup");

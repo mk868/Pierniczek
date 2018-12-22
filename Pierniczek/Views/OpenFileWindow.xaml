@@ -35,7 +35,7 @@
                 <Button Grid.Column="0" Content="Open" Width="100" Command="{Binding Open}"/>
                 <Label Grid.Column="1" Content="{Binding FileName}"/>
             </Grid>
-            <DataGrid Grid.Row="1" ItemsSource="{Binding Columns}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Data.Columns}" AutoGenerateColumns="False" CanUserAddRows="False">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="Use" Binding="{Binding Use}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />

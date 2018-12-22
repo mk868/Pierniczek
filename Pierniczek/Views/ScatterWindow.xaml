@@ -9,5 +9,22 @@
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         Title="Scatter Window" Height="450" Width="800">
-    <oxy:PlotView Model="{Binding ScatterModel}"/>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <local:SelectColumnView Grid.Column="0" DataContext="{Binding ColumnX}"/>
+            <local:SelectColumnView Grid.Column="1" DataContext="{Binding ColumnY}"/>
+            <Button Grid.Column="2" Content="Generate" Margin="5px 0" Command="{Binding Generate}" />
+        </Grid>
+        <oxy:PlotView Grid.Row="1" Model="{Binding ScatterModel}"/>
+    </Grid>
 </catel:Window>

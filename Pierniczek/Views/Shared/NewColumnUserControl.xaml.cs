@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace Pierniczek.Views.Shared
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for NewColumnUserControl.xaml
     /// </summary>
     public partial class NewColumnUserControl
     {

@@ -1,5 +1,4 @@
-﻿using Catel.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pierniczek.Views.Shared
+namespace Pierniczek.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class SelectColumnUserControl
+    public partial class DataWindow
     {
-        public SelectColumnUserControl()
+        public DataWindow()
         {
             InitializeComponent();
         }

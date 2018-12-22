@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="Pierniczek.Views.Shared.SelectColumnUserControl"
+﻿<catel:UserControl x:Class="Pierniczek.Views.SelectColumnView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Content="Select column" Height="30"/>
+        <Label Grid.Column="0" Content="{Binding Label}" Height="30"/>
         <ComboBox Grid.Column="1" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}" />
     </Grid>
 </catel:UserControl>

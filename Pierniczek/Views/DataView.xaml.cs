@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pierniczek.Views.Shared
+namespace Pierniczek.Views
 {
     /// <summary>
-    /// Interaction logic for NumberInputUserControl.xaml
+    /// Interaction logic for DataViewView.xaml
     /// </summary>
-    public partial class NumberInputUserControl
+    public partial class DataView
     {
-        public NumberInputUserControl()
+        public DataView()
         {
             InitializeComponent();
         }

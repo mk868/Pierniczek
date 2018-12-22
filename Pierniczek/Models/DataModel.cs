@@ -15,7 +15,7 @@ namespace Pierniczek.Models
             Columns = new List<ColumnModel>();
         }
 
-        public IList<RowModel> Rows { get; private set; }
-        public IList<ColumnModel> Columns { get; private set; }
+        public IList<RowModel> Rows { get; set; }
+        public IList<ColumnModel> Columns { get; set; }
     }
 }

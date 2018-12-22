@@ -24,6 +24,8 @@ namespace Pierniczek.Models
             }
             set
             {
+                if (!(value is string || value is decimal))
+                    throw new NotSupportedException("not supported data format! ");
                 _dictionary[key] = value;
             }
         }
