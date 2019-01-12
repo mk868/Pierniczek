@@ -124,11 +124,11 @@ namespace Pierniczek.Services
                 if (value.StartsWith(","))
                     value = "0" + value;
 
-                if (decimal.TryParse(value, out var dval))
+                if (double.TryParse(value, out var dval))
                 {
                     return dval;
                 }
-                return default(decimal);
+                return default(double);
             }
 
             return value;
@@ -163,7 +163,7 @@ namespace Pierniczek.Services
 
                         if (column.Type == TypeEnum.Number)
                         {
-                            objs.Add(((decimal)rowValue).ToString());
+                            objs.Add(((double)rowValue).ToString());
                             continue;
                         }
 

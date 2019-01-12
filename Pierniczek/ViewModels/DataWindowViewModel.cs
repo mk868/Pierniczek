@@ -16,7 +16,6 @@ namespace Pierniczek.ViewModels
 {
     public class DataWindowViewModel : ViewModelBase
     {
-        private string _filePath;
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IFileService _fileService;
         private readonly IMessageService _messageService;
@@ -44,6 +43,7 @@ namespace Pierniczek.ViewModels
             //Normalization = new TaskCommand(OnNormalizationExecute, DataOperationsCanExecute);
             //ShowPercent = new TaskCommand(OnShowPercentExecute, DataOperationsCanExecute);
             Scatter = new TaskCommand(OnScatterExecute, DataOperationsCanExecute);
+            BinaryVectorByClass = new TaskCommand(OnBinaryVectorByClassExecute, DataOperationsCanExecute);
             Plot3D = new TaskCommand(OnPlot3DExecute, DataOperationsCanExecute);
             //Knn = new TaskCommand(OnKnnExecute, DataOperationsCanExecute);
             //KnnLOO = new TaskCommand(OnKnnLOOExecute, DataOperationsCanExecute);
@@ -138,15 +138,6 @@ namespace Pierniczek.ViewModels
         //    SetColumns(_columns);
         //}
 
-        //private ColumnModel CreateColumn(string name, TypeEnum type)
-        //{
-        //    return new ColumnModel()
-        //    {
-        //        Name = name,
-        //        Type = type,
-        //        Use = true
-        //    };
-        //}
 
         //private async Task OnGroupByOrderExecute()
         //{
@@ -257,6 +248,13 @@ namespace Pierniczek.ViewModels
         {
             var typeFactory = this.GetTypeFactory();
             var scatterWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<ScatterWindowViewModel>(Data);
+            await _uiVisualizerService.ShowDialogAsync(scatterWindowViewModel);
+        }
+
+        private async Task OnBinaryVectorByClassExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+            var scatterWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<BinaryVectorByClassWindowViewModel>(Data);
             await _uiVisualizerService.ShowDialogAsync(scatterWindowViewModel);
         }
 
@@ -380,7 +378,7 @@ namespace Pierniczek.ViewModels
 
         private bool DataOperationsCanExecute()
         {
-            return this.Data.Rows.Count > 0;
+            return this.Data?.Rows.Count > 0;
         }
 
         public TaskCommand OpenFile { get; private set; }
@@ -396,5 +394,7 @@ namespace Pierniczek.ViewModels
         public TaskCommand Knn { get; private set; }
         public TaskCommand KnnLOO { get; private set; }
         public TaskCommand KGroup { get; private set; }
+        public TaskCommand BinaryVectorByClass { get; private set; }
+
     }
 }

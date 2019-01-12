@@ -9,7 +9,7 @@ namespace Pierniczek.Services.Interfaces
 {
     public interface IScaleService
     {
-        IList<RowModel> ChangeRange(IList<RowModel> rows, string sourceColumn, string newColumn, decimal min, decimal max);
+        IList<RowModel> ChangeRange(IList<RowModel> rows, string sourceColumn, string newColumn, double min, double max);
         IList<RowModel> Discretization(IList<RowModel> rows, string sourceColumn, string newColumn, IList<RangeModel> ranges);
         IList<RowModel> Normalization(IList<RowModel> rows, string sourceColumn, string newColumn);
         IList<RowModel> ShowProcent(IList<RowModel> rows, string sourceColumn, int percent);

@@ -131,6 +131,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behaviors\DataGridColumnsBehavior.cs" />
+    <Compile Include="Models\BinaryVectorByClassLineModel.cs" />
     <Compile Include="Models\ColumnModel.cs" />
     <Compile Include="Models\DataModel.cs" />
     <Compile Include="Models\RangeModel.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="ViewModels\PercentWindowViewModel.cs" />
     <Compile Include="ViewModels\KnnWindowViewModel.cs" />
     <Compile Include="ViewModels\Plot3dWindowViewModel.cs" />
+    <Compile Include="ViewModels\BinaryVectorByClassWindowViewModel.cs" />
     <Compile Include="ViewModels\SelectColumnViewModel.cs" />
     <Compile Include="ViewModels\SelectKGroupDistanceMethodDataWindowViewModel.cs" />
     <Compile Include="ViewModels\SetPercentWindowViewModel.cs" />
@@ -175,6 +177,15 @@
     </Compile>
     <Compile Include="Views\DataView.xaml.cs">
       <DependentUpon>DataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewColumnView.xaml.cs">
+      <DependentUpon>NewColumnView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BinaryVectorByClassWindow.xaml.cs">
+      <DependentUpon>BinaryVectorByClassWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectColumnCreateColumnWindow.xaml.cs">
+      <DependentUpon>SelectColumnCreateColumnWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Shared\NumberInputUserControl.xaml.cs">
       <DependentUpon>NumberInputUserControl.xaml</DependentUpon>
@@ -197,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\NewColumnView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\PercentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -206,6 +221,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Plot3dWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BinaryVectorByClassWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SelectColumnCreateColumnWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

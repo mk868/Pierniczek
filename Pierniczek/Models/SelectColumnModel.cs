@@ -27,6 +27,11 @@ namespace Pierniczek.ViewModels
             this.Label = label;
         }
 
+        public SelectColumnModel(IList<ColumnModel> columns, TypeEnum type, string label)
+            : this(columns.Where(c => c.Type == type).ToList(), label)
+        {
+        }
+
         public IList<ColumnModel> Columns { get; set; }
         public ColumnModel SelectedColumn { get; set; }
         public string Label { get; set; }

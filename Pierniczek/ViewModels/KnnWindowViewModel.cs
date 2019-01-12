@@ -39,8 +39,8 @@ namespace Pierniczek.ViewModels
         public PlotModel ScatterModel { get; set; }
         public IList<DistanceMeasureMethodEnum> Methods { get; set; }
         public DistanceMeasureMethodEnum? SelectedMethod { get; set; }
-        public decimal X { get; set; }
-        public decimal Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public int K { get; set; } = 3;
 
         
@@ -75,8 +75,8 @@ namespace Pierniczek.ViewModels
 
             foreach (var row in Rows)
             {
-                var x = (decimal)row[ColumnX];
-                var y = (decimal)row[ColumnY];
+                var x = (double)row[ColumnX];
+                var y = (double)row[ColumnY];
                 var className = row[ColumnClass] as string;
 
                 var line = lines[className];

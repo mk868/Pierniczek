@@ -118,16 +118,16 @@ namespace Pierniczek.ViewModels
             this.Points.Clear();
             foreach (var row in DataModel.Rows)
             {
-                var x = (decimal)row[columnX];
-                var y = (decimal)row[columnY];
-                var z = (decimal)row[columnZ];
-                var className = ColumnClass.SelectedColumn.Type == TypeEnum.String ? (string)row[columnClass] : ((decimal)row[columnClass]).ToString();
+                var x = (double)row[columnX];
+                var y = (double)row[columnY];
+                var z = (double)row[columnZ];
+                var className = ColumnClass.SelectedColumn.Type == TypeEnum.String ? (string)row[columnClass] : ((double)row[columnClass]).ToString();
                 var classColor = _colorService.GetUniqueColorByName(className);
 
                 var colorPoint3D = new ColorPoint3D();
-                colorPoint3D.X = (double)x;
-                colorPoint3D.Y = (double)y;
-                colorPoint3D.Z = (double)z;
+                colorPoint3D.X = x;
+                colorPoint3D.Y = y;
+                colorPoint3D.Z = z;
                 colorPoint3D.Color = Color.FromRgb(classColor.R, classColor.G, classColor.B);
 
                 this.Points.Add(colorPoint3D.GetGeometryModel3D());

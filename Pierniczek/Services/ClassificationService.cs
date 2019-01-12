@@ -12,28 +12,28 @@ namespace Pierniczek.Services
 {
     public class ClassificationService : IClassificationService
     {
-        public string Knn(IList<RowModel> rows, string xColumn, string yColumn, string classColumn, int k, DistanceMeasureMethodEnum method, decimal xValue, decimal yValue)
+        public string Knn(IList<RowModel> rows, string xColumn, string yColumn, string classColumn, int k, DistanceMeasureMethodEnum method, double xValue, double yValue)
         {
-            List<Tuple<RowModel, decimal>> found = new List<Tuple<RowModel, decimal>>();
+            List<Tuple<RowModel, double>> found = new List<Tuple<RowModel, double>>();
             //point, className, distance
 
 
             var distances = CalculateDistances(
                 rows
-                    .Select(s => new Tuple<decimal, decimal>((decimal)s[xColumn], (decimal)s[yColumn]))
+                    .Select(s => new Tuple<double, double>((double)s[xColumn], (double)s[yColumn]))
                     .ToList(),
-                new Tuple<decimal, decimal>(xValue, yValue),
+                new Tuple<double, double>(xValue, yValue),
                 method
                 );
 
             int i = 0;
             foreach (var row in rows)
             {
-                var rowX = (decimal)row[xColumn];
-                var rowY = (decimal)row[yColumn];
+                var rowX = (double)row[xColumn];
+                var rowY = (double)row[yColumn];
 
-                decimal distance = distances[i++];
-                found.Add(new Tuple<RowModel, decimal>(
+                double distance = distances[i++];
+                found.Add(new Tuple<RowModel, double>(
                     row,
                     distance
                     ));
@@ -67,8 +67,8 @@ namespace Pierniczek.Services
 
                 foreach (var row in rows)
                 {
-                    var rowX = (decimal)row[xColumn];
-                    var rowY = (decimal)row[yColumn];
+                    var rowX = (double)row[xColumn];
+                    var rowY = (double)row[yColumn];
                     var rowClass = row[classColumn] as string;
 
                     var limitedRows = rows.Where(r => r != row).ToList();
@@ -88,15 +88,15 @@ namespace Pierniczek.Services
 
 
 
-        private List<decimal> CalculateDistances(List<Tuple<decimal, decimal>> values, Tuple<decimal, decimal> p2, DistanceMeasureMethodEnum method)
+        private List<double> CalculateDistances(List<Tuple<double, double>> values, Tuple<double, double> p2, DistanceMeasureMethodEnum method)
         {
-            var result = new List<decimal>();
+            var result = new List<double>();
 
             foreach (var p1 in values)
             {
                 if (method == DistanceMeasureMethodEnum.Euclidean)
                 {
-                    var distance = (decimal)Math.Sqrt(Math.Pow((double)p1.Item1 - (double)p2.Item1, 2) + Math.Pow((double)p1.Item2 - (double)p2.Item2, 2));
+                    var distance = (double)Math.Sqrt(Math.Pow(p1.Item1 - p2.Item1, 2) + Math.Pow(p1.Item2 - p2.Item2, 2));
                     result.Add(distance);
                     continue;
                 }
@@ -117,7 +117,7 @@ namespace Pierniczek.Services
 
                 if (method == DistanceMeasureMethodEnum.Mahalanobis)
                 {
-                    var distance = (decimal)Distance.Mahalanobis(new double[] { (double)p1.Item1, (double)p1.Item2 }, new double[] { (double)p2.Item1, (double)p2.Item2 }, new double[,] { });
+                    var distance = (double)Distance.Mahalanobis(new double[] { (double)p1.Item1, (double)p1.Item2 }, new double[] { (double)p2.Item1, (double)p2.Item2 }, new double[,] { });
                     result.Add(distance);
                     continue;
                 }
@@ -148,12 +148,12 @@ namespace Pierniczek.Services
 
                 foreach (var row in rows)
                 {
-                    var rowX = (decimal)row[columnX];
-                    var rowY = (decimal)row[columnY];
+                    var rowX = (double)row[columnX];
+                    var rowY = (double)row[columnY];
 
                     var distances = CalculateDistances(
-                        centers.Select(s => new Tuple<decimal, decimal>((decimal)s.Value[columnX], (decimal)s.Value[columnY])).ToList(),
-                        new Tuple<decimal, decimal>(rowX, rowY),
+                        centers.Select(s => new Tuple<double, double>((double)s.Value[columnX], (double)s.Value[columnY])).ToList(),
+                        new Tuple<double, double>(rowX, rowY),
                         method
                         );
 
@@ -168,13 +168,13 @@ namespace Pierniczek.Services
                     //the new center point will be the average of all points assigned to this central point
                     var allAssignedPoints = assignedCenterPoint.Where(w => w.Value == i).Select(s => s.Key).ToList();
 
-                    var newX = allAssignedPoints.Select(s => (decimal)s[columnX]).Average();
-                    var newY = allAssignedPoints.Select(s => (decimal)s[columnY]).Average();
+                    var newX = allAssignedPoints.Select(s => (double)s[columnX]).Average();
+                    var newY = allAssignedPoints.Select(s => (double)s[columnY]).Average();
 
                     //find new center point (closest to [newX, newY])
                     var distances = CalculateDistances(
-                        allAssignedPoints.Select(s => new Tuple<decimal, decimal>((decimal)s[columnX], (decimal)s[columnY])).ToList(),
-                        new Tuple<decimal, decimal>(newX, newY),
+                        allAssignedPoints.Select(s => new Tuple<double, double>((double)s[columnX], (double)s[columnY])).ToList(),
+                        new Tuple<double, double>(newX, newY),
                         DistanceMeasureMethodEnum.Euclidean
                         );
 
@@ -195,7 +195,7 @@ namespace Pierniczek.Services
 
             foreach (var row in assignedCenterPoint)
             {
-                row.Key[newColumn] = (decimal)row.Value;
+                row.Key[newColumn] = (double)row.Value;
             }
 
             return rows;

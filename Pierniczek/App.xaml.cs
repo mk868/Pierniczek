@@ -58,6 +58,9 @@ namespace Pierniczek
             var uiVisualizerService = serviceLocator.ResolveType<IUIVisualizerService>();
             uiVisualizerService.Register<DataWindowViewModel, DataWindow>();
             //uiVisualizerService.Register<MainWindowViewModel, MainWindow>();
+            uiVisualizerService.Register<ScatterWindowViewModel, ScatterWindow>();
+            uiVisualizerService.Register<BinaryVectorByClassWindowViewModel, BinaryVectorByClassWindow>();
+
             uiVisualizerService.Register<OpenFileWindowViewModel, OpenFileWindow>();
             uiVisualizerService.Register<NewColumnDataWindowViewModel, NewColumnDataWindow>();
             uiVisualizerService.Register<SelectColumnDataWindowViewModel, SelectColumnDataWindow>();
@@ -65,7 +68,6 @@ namespace Pierniczek
             uiVisualizerService.Register<SetRangesDataWindowViewModel, SetRangesDataWindow>();
             uiVisualizerService.Register<PercentWindowViewModel, PercentWindow>();
             uiVisualizerService.Register<SetPercentWindowViewModel, SetPercentWindow>();
-            uiVisualizerService.Register<ScatterWindowViewModel, ScatterWindow>();
             uiVisualizerService.Register<KnnWindowViewModel, KnnWindow>();
             uiVisualizerService.Register<KnnLeaveOneOutWindowViewModel, KnnLeaveOneOutWindow>();
             uiVisualizerService.Register<Plot3dWindowViewModel, Plot3dWindow>();

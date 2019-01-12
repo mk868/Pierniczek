@@ -25,8 +25,9 @@ namespace Pierniczek.ViewModels
         {
             this._colorService = colorService;
 
-            ColumnX = new SelectColumnModel(data.Columns.Where(c => c.Type == TypeEnum.Number).ToList(), "X axis");
+            ColumnX = new SelectColumnModel(data.Columns, TypeEnum.Number, "X axis");
             ColumnY = new SelectColumnModel(data.Columns, "Y axis");
+            ColumnClass = new SelectColumnModel(data.Columns, TypeEnum.String, "Class");
             DataModel = data;
 
             Generate = new TaskCommand(OnGenerateExecute, GenerateCanExecute);
@@ -35,19 +36,29 @@ namespace Pierniczek.ViewModels
 
         public SelectColumnModel ColumnX { get; set; }
         public SelectColumnModel ColumnY { get; set; }
+        public SelectColumnModel ColumnClass { get; set; }
         public PlotModel ScatterModel { get; set; }
 
-        public void SetDataWithClasses()
+
+        public void SetData()
         {
+            bool isColumnYClass = false;
             var columnX = ColumnX.SelectedColumn.Name;
             var columnY = ColumnY.SelectedColumn.Name;
+            var columnClass = ColumnClass.SelectedColumn?.Name; //TODO can be set to null!
+            if (ColumnY.SelectedColumn.Type == TypeEnum.String)
+            {
+                isColumnYClass = true;
+                columnClass = columnY;
+            }
+
 
             var tmp = new PlotModel();
-            tmp.Title = $"Scatter plot Y: {columnY}, X: {columnX}";
+            tmp.Title = $"Scatter plot X: {columnX}, Y: {columnY}, Class: {columnClass}";
 
             //create line per class
             var lines = DataModel.Rows
-                .Select(s => s[columnY] as string)
+                .Select(s => s[columnClass] as string)
                 .Distinct()
                 .ToDictionary(x => x, x =>
                 {
@@ -61,20 +72,38 @@ namespace Pierniczek.ViewModels
                         Title = x
                     };
                 });
-
-            var rowValues = DataModel.Rows
-                .GroupBy(x =>
-                    new { xVal = (decimal)x[columnX], yClass = x[columnY] as string }
-            ) //hardcore ;)
-                .ToDictionary(x => new ValueTuple<decimal, string>(x.Key.xVal, x.Key.yClass), x => x.Count());
+            
+            Dictionary<(double, string), int> classCount = null;
+            if (isColumnYClass)
+            {
+                classCount = DataModel.Rows
+                    .GroupBy(x =>
+                        new { xVal = (double)x[columnX], yClass = x[columnY] as string }
+                ) //hardcore ;)
+                    .ToDictionary(x => new ValueTuple<double, string>(x.Key.xVal, x.Key.yClass), x => x.Count());
+            }
 
             foreach (var row in DataModel.Rows)
             {
-                var x = (decimal)row[columnX];
-                var yclass = row[columnY] as string;
-                var val = rowValues[new ValueTuple<decimal, string>(x, yclass)];
-                var line = lines[yclass];
-                line.Points.Add(new DataPoint((double)x, val));
+                var rowX = (double)row[columnX];
+                var rowClass = row[columnClass] as string;
+                double val;
+                if (isColumnYClass)
+                {
+                    var key = new ValueTuple<double, string>(rowX, rowClass);
+                    if (!classCount.ContainsKey(key))
+                        continue;
+
+                    val = classCount[key];
+                    classCount.Remove(key);
+                }
+                else
+                {
+                    val = (double)row[columnY];
+                }
+                
+                var line = lines[rowClass];
+                line.Points.Add(new DataPoint(rowX, val));
             }
 
             foreach (var line in lines)
@@ -84,40 +113,9 @@ namespace Pierniczek.ViewModels
             this.ScatterModel = tmp;
         }
 
-        public void SetData()
-        {
-            var columnX = ColumnX.SelectedColumn.Name;
-            var columnY = ColumnY.SelectedColumn.Name;
-
-            var tmp = new PlotModel();
-            tmp.Title = $"Scatter plot Y: {columnY}, X: {columnX}";
-            
-            var s1 = new LineSeries
-            {
-                StrokeThickness = 0,
-                MarkerSize = 3,
-                MarkerStroke = OxyColors.ForestGreen,
-                MarkerType = MarkerType.Diamond
-            };
-
-            foreach (var row in DataModel.Rows)
-            {
-                var x = (decimal)row[columnX];
-                var y = (decimal)row[columnY];
-
-                s1.Points.Add(new DataPoint((double)x, (double)y));
-            }
-
-            tmp.Series.Add(s1);
-            this.ScatterModel = tmp;
-        }
-
         private async Task OnGenerateExecute()
         {
-            if (ColumnY.SelectedColumn.Type == TypeEnum.Number)
-                SetData();
-            else
-                SetDataWithClasses();
+            SetData();
         }
 
 

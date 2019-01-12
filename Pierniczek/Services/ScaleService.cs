@@ -13,15 +13,15 @@ namespace Pierniczek.Services
 {
 	public class ScaleService : IScaleService
 	{
-		public IList<RowModel> ChangeRange(IList<RowModel> rows, string sourceColumn, string newColumn, decimal min, decimal max)
+		public IList<RowModel> ChangeRange(IList<RowModel> rows, string sourceColumn, string newColumn, double min, double max)
 		{
-			decimal realMin = rows.Min(r => (decimal)r[sourceColumn]);
-            decimal realMax = rows.Max(r => (decimal)r[sourceColumn]);
+            double realMin = rows.Min(r => (double)r[sourceColumn]);
+            double realMax = rows.Max(r => (double)r[sourceColumn]);
 
 			foreach (var row in rows)
 			{
-				var value = (decimal)row[sourceColumn];
-				decimal newValue = 0;
+				var value = (double)row[sourceColumn];
+                double newValue = 0;
                 
 			    newValue = (value - realMin) / realMax * (max - min)  + min;
 
@@ -31,7 +31,7 @@ namespace Pierniczek.Services
 			return rows;
 		}
 
-		private int? GetRange(IList<RangeModel> ranges, decimal value)
+		private int? GetRange(IList<RangeModel> ranges, double value)
 		{
 			for (var i = 0; i < ranges.Count; i++)
 			{
@@ -60,7 +60,7 @@ namespace Pierniczek.Services
 
 			foreach (var row in rows)
 			{
-				var value = (decimal)row[sourceColumn];
+				var value = (double)row[sourceColumn];
 
 				int? rangeNum = null;
 
@@ -101,7 +101,7 @@ namespace Pierniczek.Services
 			{
 				var value = row[sourceColumn];
 
-				row[newColumn] = (decimal)((Convert.ToDouble(value) - mean) / variation);
+				row[newColumn] = (double)((Convert.ToDouble(value) - mean) / variation);
 			}
 
 			return rows;

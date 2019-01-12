@@ -26,21 +26,35 @@
                     <RibbonButton Label="Save file" Command="{Binding SaveFile}"/>
                 </RibbonGroup>
             </RibbonTab>
-            <RibbonTab Header="Actions">
-                <RibbonGroup >
-                    <RibbonMenuButton Label="String to int" >
-                        <RibbonMenuItem Header="Alphabetically" Command="{Binding GroupAlphabetically}" />
-                        <RibbonMenuItem Header="By Order" Command="{Binding GroupByOrder}"/>
-                    </RibbonMenuButton>
+            <RibbonTab Header="Actions.old">
+                <RibbonGroup Header="String Conversion">
+                    <RibbonMenuItem Header="String to int Alphabetically" Command="{Binding GroupAlphabetically}" />
+                    <RibbonMenuItem Header="String to int By Order" Command="{Binding GroupByOrder}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Number Conversion">
                     <RibbonMenuItem Header="New Range" Command="{Binding NewRange}" />
                     <RibbonMenuItem Header="Discretization" Command="{Binding Discretization}" />
                     <RibbonMenuItem Header="Normalization" Command="{Binding Normalization}" />
+                </RibbonGroup>
+                <RibbonGroup Header="Grouping">
+                    <RibbonMenuItem Header="K-Group" Command="{Binding KGroup}" />
+
+                </RibbonGroup>
+                <RibbonGroup Header="Other">
                     <RibbonMenuItem Header="ShowProcent" Command="{Binding ShowPercent}" />
-                    <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
-                    <RibbonMenuItem Header="Plot3D" Command="{Binding Plot3D}" />
                     <RibbonMenuItem Header="K-nn" Command="{Binding Knn}" />
                     <RibbonMenuItem Header="K-nn leave-one-out" Command="{Binding KnnLOO}" />
-                    <RibbonMenuItem Header="K-Group" Command="{Binding KGroup}" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Actions.old">
+            </RibbonTab>
+            <RibbonTab Header="Show">
+                <RibbonGroup Header="2D">
+                    <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
+                    <RibbonMenuItem Header="Binary Vector By Class" Command="{Binding BinaryVectorByClass}" />
+                </RibbonGroup>
+                <RibbonGroup Header="3D">
+                    <RibbonMenuItem Header="Plot3D" Command="{Binding Plot3D}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

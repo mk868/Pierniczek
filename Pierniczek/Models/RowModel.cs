@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Pierniczek.Models
 {
-    public class RowModel : ModelBase
+    public class RowModel
     {
         private Dictionary<string, object> _dictionary;
 
@@ -24,7 +24,7 @@ namespace Pierniczek.Models
             }
             set
             {
-                if (!(value is string || value is decimal))
+                if (!(value is string || value is double))
                     throw new NotSupportedException("not supported data format! ");
                 _dictionary[key] = value;
             }
