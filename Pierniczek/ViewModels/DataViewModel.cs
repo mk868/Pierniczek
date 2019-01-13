@@ -26,7 +26,13 @@ namespace Pierniczek.ViewModels
         {
             Model = model;
 
-            foreach (var column in model.Columns)
+            ReloadColumns();
+        }
+
+        private void ReloadColumns()
+        {
+            Columns.Clear();
+            foreach (var column in Model.Columns)
             {
                 if (!column.Use)
                     continue;
@@ -38,6 +44,7 @@ namespace Pierniczek.ViewModels
                 Columns.Add(dataGridColumn);
             }
         }
+
 
         public DataViewModel()
         {

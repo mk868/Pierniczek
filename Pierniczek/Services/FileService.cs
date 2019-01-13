@@ -14,9 +14,36 @@ namespace Pierniczek.Services
     {
         public const int DefaultMaxLines = 7;
 
-        private string[] SplitLine(string line)
+        private string[] SplitLine(string line, FileDataSeparatorEnum separator)
         {
-            return line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+            if (separator == FileDataSeparatorEnum.WhiteChars)
+            {
+                return line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+            }
+            List<char> chars = new List<char>();
+
+            if (separator.HasFlag(FileDataSeparatorEnum.Tab))
+            {
+                chars.Add('\t');
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Dot))
+            {
+                chars.Add('.');
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Comma))
+            {
+                chars.Add(',');
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Semicolon))
+            {
+                chars.Add(';');
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Space))
+            {
+                chars.Add(' ');
+            }
+
+            return line.Split(chars.ToArray());
         }
 
         private TypeEnum GetCellType(string value)
@@ -75,7 +102,7 @@ namespace Pierniczek.Services
 
             return result;
         }
-        
+
         private string GetNextLine(StreamReader reader)
         {
             for (; !reader.EndOfStream;)
@@ -134,18 +161,14 @@ namespace Pierniczek.Services
             return value;
         }
 
-       
 
-        public void SaveToFile(string filePath, IList<ColumnModel> columns, IList<RowModel> rows)
+        public void Save(string filePath, DataModel data, FileDataSeparatorEnum separator)
         {
-            //REMOVE!!!
-        }
+            var separatorText = GetSeparatorText(separator);
 
-        public void Save(string filePath, DataModel data)
-        {
             using (var fs = File.CreateText(filePath))
             {
-                fs.WriteLine(string.Join("\t", data.Columns.Select(s => s.Name).ToArray()));
+                fs.WriteLine(string.Join(separatorText, data.Columns.Select(s => s.Name).ToArray()));
 
                 foreach (var row in data.Rows)
                 {
@@ -157,27 +180,47 @@ namespace Pierniczek.Services
 
                         if (column.Type == TypeEnum.String)
                         {
-                            objs.Add(rowValue as string);
+                            objs.Add(rowValue.ToString());
                             continue;
                         }
 
                         if (column.Type == TypeEnum.Number)
                         {
-                            objs.Add(((double)rowValue).ToString());
+                            objs.Add(((double)rowValue).ToString().Replace(',', '.'));//FIXME
                             continue;
                         }
 
                         throw new NotImplementedException("not known type");
                     }
 
-                    fs.WriteLine(string.Join("\t", objs.ToArray()));
+                    fs.WriteLine(string.Join(separatorText, objs.ToArray()));
                 }
             }
         }
 
+        private string GetSeparatorText(FileDataSeparatorEnum separator)
+        {
+            if (separator.HasFlag(FileDataSeparatorEnum.Dot))
+            {
+                return ".";
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Semicolon))
+            {
+                return ";";
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Space))
+            {
+                return " ";
+            }
+            if (separator.HasFlag(FileDataSeparatorEnum.Comma))
+            {
+                return ",";
+            }
 
+            return "\t";
+        }
 
-        public DataModel ReloadRows(string filePath, DataModel dataModel)
+        public DataModel ReloadRows(string filePath, DataModel dataModel, FileDataSeparatorEnum separator)
         {
             dataModel.Rows.Clear();
             bool headerSkipped = false;
@@ -185,9 +228,9 @@ namespace Pierniczek.Services
             using (StreamReader reader = new StreamReader(filePath))
             {
                 string line;
-                while((line = GetNextLine(reader)) != null)
+                while ((line = GetNextLine(reader)) != null)
                 {
-                    var cells = SplitLine(line);
+                    var cells = SplitLine(line, separator);
 
                     if (!headerSkipped)
                     {
@@ -216,9 +259,9 @@ namespace Pierniczek.Services
             return dataModel;
         }
 
-      
 
-        public DataModel LoadDefinitions(string filePath)
+
+        public DataModel LoadDefinitions(string filePath, FileDataSeparatorEnum separator)
         {
             string[] columns = null;
             string[] values = null;
@@ -230,13 +273,13 @@ namespace Pierniczek.Services
                 {
                     if (columns == null)
                     {
-                        columns = SplitLine(line);
+                        columns = SplitLine(line, separator);
                         continue;
                     }
 
                     if (values == null)
                     {
-                        values = SplitLine(line);
+                        values = SplitLine(line, separator);
                         break;
                     }
                 }
@@ -252,12 +295,24 @@ namespace Pierniczek.Services
             return result;
         }
 
-        public DataModel Load(string filePath)
+        public DataModel Load(string filePath, FileDataSeparatorEnum separator)
         {
-            var result = this.LoadDefinitions(filePath);
-            return this.ReloadRows(filePath, result);
+            var result = this.LoadDefinitions(filePath, separator);
+            return this.ReloadRows(filePath, result, separator);
         }
 
-        
+        public FileDataSeparatorEnum DetectSeparatorType(string fileName)
+        {
+            var ext = Path.GetExtension(fileName)
+               .Remove(0, 1) // remove dot
+               .ToLower();
+
+            if(ext == "csv")
+            {
+                return FileDataSeparatorEnum.Semicolon | FileDataSeparatorEnum.Comma;
+            }
+
+            return FileDataSeparatorEnum.WhiteChars;
+        }
     }
 }

@@ -11,60 +11,78 @@
         Title="Binary Vector By Class Window" Height="450" Width="800">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <local:SelectColumnView Grid.Column="0" DataContext="{Binding ColumnX}"/>
-            <local:SelectColumnView Grid.Column="1" DataContext="{Binding ColumnY}"/>
-            <local:SelectColumnView Grid.Column="2" DataContext="{Binding ColumnClass}"/>
-            <Button Grid.Column="3" Content="Generate" Margin="5px 0" Command="{Binding Generate}" />
-            <Button Grid.Column="4" Content="Next Step" Margin="5px 0" Command="{Binding NextStep}" />
-            <Button Grid.Column="5" Content="Finish" Margin="5px 0" Command="{Binding Finish}" />
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <local:SelectColumnsView Grid.Row="0" DataContext="{Binding DimensionColumns}" />
+            <local:SelectColumnView Grid.Row="1" DataContext="{Binding ColumnClass}"/>
+            <Button Grid.Row="2" Content="Generate" Margin="5px 0" Command="{Binding Generate}" />
         </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="200" />
-            </Grid.ColumnDefinitions>
-            <oxy:PlotView Grid.Column="0" Model="{Binding ScatterModel}" />
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <ListBox Grid.Column="2" ItemsSource="{Binding Lines}">
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+        <oxy:PlotView Grid.Column="2" Model="{Binding ScatterModel}" />
+        <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid Grid.Column="4" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Lines" />
+            <ListBox Grid.Row="1" ItemsSource="{Binding Lines}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
                             <TextBlock Text="{Binding Dimension}" />
                             <TextBlock Text=": " />
                             <TextBlock Text="{Binding Value}" />
-
                         </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </Grid>
-        <Grid Grid.Row="2">
-            <WrapPanel>
-                <TextBlock Text="X: " />
-                <TextBox Text="{Binding InputX}" Width="100" />
-                <TextBlock Text="Y: " />
-                <TextBox Text="{Binding InputY}" Width="100" />
-                <Button Content="Test" Command="{Binding CalculateVector}" />
-                <TextBlock Text="Vector: " />
-                <TextBlock Text="{Binding OutputVector}" MinWidth="100" />
-                <TextBlock Text="Clicked Point Vector: " />
-                <TextBlock Text="{Binding ClickedVector}" MinWidth="100" />
+            <WrapPanel Grid.Row="2" >
+                <Button Content="Next Step" Command="{Binding NextStep}" />
+                <Button Content="Finish" Margin="2px 0" Command="{Binding Finish}" />
+                <Button Content="Add Vector Column" Command="{Binding AddVectorColumn}" />
             </WrapPanel>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                          ItemsSource="{Binding InputDimensions}" AutoGenerateColumns="False" CanUserAddRows="False" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Key}" Width="*" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Button Grid.Row="1" Grid.Column="1" Content="Test" Command="{Binding CalculateVector}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Vector: " />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding OutputVector}" MinWidth="100" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Clicked Vector: " />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ClickedVector}" MinWidth="100" />
+            </Grid>
         </Grid>
     </Grid>
 </catel:Window>

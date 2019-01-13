@@ -26,6 +26,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -43,8 +44,18 @@
                     <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="2">
+            <WrapPanel Grid.Row="2">
+                <TextBlock Text="Separator: " />
+                <CheckBox Content="White Chars" IsChecked="{Binding SeparatorWhiteChars}" />
+                <CheckBox Content="Tab" IsChecked="{Binding SeparatorTab}" />
+                <CheckBox Content="Dot" IsChecked="{Binding SeparatorDot}" />
+                <CheckBox Content="Comma" IsChecked="{Binding SeparatorComma}" />
+                <CheckBox Content="Semicolon" IsChecked="{Binding SeparatorSemicolon}" />
+                <CheckBox Content="Space" IsChecked="{Binding SeparatorSpace}" />
+            </WrapPanel>
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="5px"/>
                     <ColumnDefinition Width="auto"/>
@@ -52,10 +63,11 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Accept" Width="100" Command="{Binding Accept}"/>
-                <Button Grid.Column="2" Content="Select all" Width="60" Command="{Binding SelectAll}"/>
-                <Button Grid.Column="3" Content="Unselect all" Width="70" Command="{Binding UnselectAll}"/>
-                <Button Grid.Column="4" Content="Toggle" Width="50" Command="{Binding ToggleSelection}"/>
+                <Button Grid.Column="0" Content="Reload" Width="100" Command="{Binding Reload}"/>
+                <Button Grid.Column="1" Content="Accept" Width="100" Command="{Binding Accept}"/>
+                <Button Grid.Column="3" Content="Select all" Width="60" Command="{Binding SelectAll}"/>
+                <Button Grid.Column="4" Content="Unselect all" Width="70" Command="{Binding UnselectAll}"/>
+                <Button Grid.Column="5" Content="Toggle" Width="50" Command="{Binding ToggleSelection}"/>
             </Grid>
         </Grid>
         <TextBox Grid.Column="1" TextWrapping="NoWrap" Text="{Binding FilePreview}"  IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>

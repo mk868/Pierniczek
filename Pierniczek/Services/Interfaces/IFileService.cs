@@ -13,9 +13,10 @@ namespace Pierniczek.Services.Interfaces
         string PreviewFile(string filePath, int lines);
         
         
-        void Save(string filePath, DataModel data);
-        DataModel Load(string filePath);
-        DataModel LoadDefinitions(string filePath);
-        DataModel ReloadRows(string filePath, DataModel dataModel);
+        FileDataSeparatorEnum DetectSeparatorType(string fileName);
+        void Save(string filePath, DataModel data, FileDataSeparatorEnum separator);
+        DataModel Load(string filePath, FileDataSeparatorEnum separator);
+        DataModel LoadDefinitions(string filePath, FileDataSeparatorEnum separator);
+        DataModel ReloadRows(string filePath, DataModel dataModel, FileDataSeparatorEnum separator);
     }
 }

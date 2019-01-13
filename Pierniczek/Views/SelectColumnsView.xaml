@@ -1,0 +1,28 @@
+﻿<catel:UserControl x:Class="Pierniczek.Views.SelectColumnsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pierniczek.Views"
+        xmlns:models="clr-namespace:Pierniczek.Models"
+        mc:Ignorable="d"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        xmlns:catel="http://schemas.catelproject.com"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DesignHeight="400" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Content="{Binding Label}" Height="30" />
+        <ListBox Grid.Row="1" Name="List1" Grid.Column="1" ItemsSource="{Binding Columns}" SelectionMode="Extended">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" 
+                                   CommandParameter="{Binding ElementName=List1, Path=SelectedItems}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
+    </Grid>
+</catel:UserControl>

@@ -70,7 +70,7 @@ namespace Pierniczek.ViewModels
             if (await saveFileService.DetermineFileAsync())
             {
                 var path = saveFileService.FileName;
-                _fileService.Save(path, Data);
+                _fileService.Save(path, Data, path.EndsWith("csv") ? FileDataSeparatorEnum.Comma : FileDataSeparatorEnum.WhiteChars);//FIXME
             }
         }
 

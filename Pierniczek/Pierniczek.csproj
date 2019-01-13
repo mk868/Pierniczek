@@ -68,6 +68,9 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.0.1\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.2.0.0-unstable1035\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -133,10 +136,14 @@
     <Compile Include="Behaviors\DataGridColumnsBehavior.cs" />
     <Compile Include="Models\BinaryVectorByClassLineModel.cs" />
     <Compile Include="Models\ColumnModel.cs" />
+    <Compile Include="Models\FileDataSeparatorEnum.cs" />
+    <Compile Include="Models\PairModel.cs" />
+    <Compile Include="Models\SingleDataModel.cs" />
     <Compile Include="Models\DataModel.cs" />
     <Compile Include="Models\RangeModel.cs" />
     <Compile Include="Models\DistanceMeasureMethodEnum.cs" />
     <Compile Include="Models\RowModel.cs" />
+    <Compile Include="Models\SelectColumnsModel.cs" />
     <Compile Include="Models\SelectColumnModel.cs" />
     <Compile Include="Models\TypeEnum.cs" />
     <Compile Include="Services\ClassificationService.cs" />
@@ -160,6 +167,7 @@
     <Compile Include="ViewModels\KnnWindowViewModel.cs" />
     <Compile Include="ViewModels\Plot3dWindowViewModel.cs" />
     <Compile Include="ViewModels\BinaryVectorByClassWindowViewModel.cs" />
+    <Compile Include="ViewModels\SelectColumnsViewModel.cs" />
     <Compile Include="ViewModels\SelectColumnViewModel.cs" />
     <Compile Include="ViewModels\SelectKGroupDistanceMethodDataWindowViewModel.cs" />
     <Compile Include="ViewModels\SetPercentWindowViewModel.cs" />
@@ -186,6 +194,9 @@
     </Compile>
     <Compile Include="Views\SelectColumnCreateColumnWindow.xaml.cs">
       <DependentUpon>SelectColumnCreateColumnWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectColumnsView.xaml.cs">
+      <DependentUpon>SelectColumnsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Shared\NumberInputUserControl.xaml.cs">
       <DependentUpon>NumberInputUserControl.xaml</DependentUpon>
@@ -229,6 +240,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SelectColumnCreateColumnWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SelectColumnsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

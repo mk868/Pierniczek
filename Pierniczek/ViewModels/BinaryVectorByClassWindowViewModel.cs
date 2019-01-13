@@ -1,4 +1,5 @@
-﻿using Catel.IoC;
+﻿using Catel.Fody;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using OxyPlot;
@@ -21,35 +22,18 @@ namespace Pierniczek.ViewModels
     {
         private readonly IColorService _colorService;
         private readonly IMessageService _messageService;
+        private readonly IUIVisualizerService _uiVisualizerService;
 
-        private DataModel DataModel { get; set; }
+        //[Model]
+        //[Expose("Columns")]
+        public DataModel DataModel { get; set; }
         public ObservableCollection<BinaryVectorByClassLineModel> Lines { get; set; }
 
-        public BinaryVectorByClassWindowViewModel(DataModel data, IColorService colorService, IMessageService messageService)
-        {
-            this._colorService = colorService;
-            this._messageService = messageService;
-
-            Lines = new ObservableCollection<BinaryVectorByClassLineModel>();
-
-            ColumnX = new SelectColumnModel(data.Columns, TypeEnum.Number, "X axis");
-            ColumnY = new SelectColumnModel(data.Columns, TypeEnum.Number, "Y axis");
-            ColumnClass = new SelectColumnModel(data.Columns, "Class");
-            DataModel = data;
-
-            Generate = new TaskCommand(OnGenerateExecute, GenerateCanExecute);
-            NextStep = new TaskCommand(OnNextStepExecute, GenerateCanExecute);
-            Finish = new TaskCommand(OnFinishExecute, GenerateCanExecute);
-            CalculateVector = new TaskCommand(OnCalculateVectorExecute, GenerateCanExecute);
-        }
-
-        public SelectColumnModel ColumnX { get; set; }
-        public SelectColumnModel ColumnY { get; set; }
+        public SelectColumnsModel DimensionColumns { get; set; }
         public SelectColumnModel ColumnClass { get; set; }
         public PlotModel ScatterModel { get; set; }
 
-        public double InputX { get; set; }
-        public double InputY { get; set; }
+        public IList<PairModel<string, double>> InputDimensions { get; set; }
         public string OutputVector { get; set; }
         public string ClickedVector { get; set; }
 
@@ -63,17 +47,38 @@ namespace Pierniczek.ViewModels
         private string _columnHorizontal;//used in plot lines
 
 
+        public BinaryVectorByClassWindowViewModel(DataModel data, IColorService colorService, IMessageService messageService, IUIVisualizerService uiVisualizerService)
+        {
+            this._colorService = colorService;
+            this._messageService = messageService;
+            this._uiVisualizerService = uiVisualizerService;
+
+            Lines = new ObservableCollection<BinaryVectorByClassLineModel>();
+            InputDimensions = new ObservableCollection<PairModel<string, double>>();
+
+            DimensionColumns = new SelectColumnsModel(data.Columns, TypeEnum.Number, "Dimensions");
+            ColumnClass = new SelectColumnModel(data.Columns, "Class");
+            DataModel = data;
+
+            Generate = new TaskCommand(OnGenerateExecute, GenerateCanExecute);
+            NextStep = new TaskCommand(OnNextStepExecute, GenerateCanExecute);
+            Finish = new TaskCommand(OnFinishExecute, GenerateCanExecute);
+            CalculateVector = new TaskCommand(OnCalculateVectorExecute, GenerateCanExecute);
+            AddVectorColumn = new TaskCommand(OnAddVectorColumnExecute, GenerateCanExecute);
+        }
+
+
         private void InitDimensions()
         {
             this.Lines.Clear();
             _done = false;
             _nonLinear = false;
-            var columnX = ColumnX.SelectedColumn.Name;
-            var columnY = ColumnY.SelectedColumn.Name;
-            _columnHorizontal = columnX;
             _dimensions.Clear();
-            _dimensions.Add(columnX);
-            _dimensions.Add(columnY);
+            foreach (var column in DimensionColumns.SelectedColumns)
+            {
+                _dimensions.Add(column.Name);
+            }
+            _columnHorizontal = _dimensions.Count == 2 ? _dimensions[0] : null;
             _columnClass = ColumnClass.SelectedColumn.Name;
 
             _sortedRows = new Dictionary<string, IList<RowModel>>();
@@ -85,6 +90,11 @@ namespace Pierniczek.ViewModels
 
         private void RefreshPlotLines()
         {
+            if (_dimensions.Count != 2)
+            {
+                return;
+            }
+
             this.ScatterModel.Annotations.Clear();
 
             int i = 1;
@@ -213,8 +223,13 @@ namespace Pierniczek.ViewModels
 
         public void SetData()//TODO share with Scatter
         {
-            var columnX = ColumnX.SelectedColumn.Name;
-            var columnY = ColumnY.SelectedColumn.Name;
+            if (_dimensions.Count != 2)
+            {
+                this.ScatterModel = null;
+                return;
+            }
+            var columnX = _dimensions[0];
+            var columnY = _dimensions[1];
             var columnClass = ColumnClass.SelectedColumn.Name;
 
             var tmp = new PlotModel();
@@ -256,13 +271,18 @@ namespace Pierniczek.ViewModels
             this.ScatterModel = tmp;
         }
 
-        private int[] GetPointVector(double x, double y)
+        private int[] GetPointVector(IList<double> values)
         {
+            if (values.Count != _dimensions.Count)
+            {
+                throw new Exception("values.Count != _dimensions.Count");
+            }
+
             var result = new int[this.Lines.Count];
             var i = 0;
             foreach (var line in this.Lines)
             {
-                var value = line.Dimension == _columnHorizontal ? x : y;
+                var value = values[_dimensions.IndexOf(line.Dimension)];
                 var item = 0;
 
                 if (line.Direction && value >= line.Value || !line.Direction && value <= line.Value)
@@ -281,13 +301,41 @@ namespace Pierniczek.ViewModels
 
             var position = (sender as LineSeries).InverseTransform(e.Position);
 
-            this.ClickedVector = "[" + string.Join(", ", GetPointVector(position.X, position.Y)) + "]";
+            this.ClickedVector = "[" + string.Join(", ", GetPointVector(new List<double> { position.X, position.Y })) + "]";
         }
 
         private async Task OnGenerateExecute()
         {
             InitDimensions();
             SetData();
+            UpdateInputDimensionsList();
+        }
+
+        private void UpdateInputDimensionsList()
+        {
+            //delete not used
+            this.InputDimensions
+                .Where(w =>
+                    !this.DimensionColumns.SelectedColumns.Any(a => a.Name == w.Key)
+                )
+                .ToList()
+                .ForEach(e => this.InputDimensions.Remove(e));
+
+            //add new
+            for (var i = 0; i < this.DimensionColumns.SelectedColumns.Count; i++)
+            {
+                var column = this.DimensionColumns.SelectedColumns[i];
+                var columnName = column.Name;
+                if (this.InputDimensions.Any(c => c.Key == columnName))
+                {
+                    continue;
+                }
+
+                var pair = new PairModel<string, double>();
+                pair.Key = columnName;
+                pair.Value = 0;
+                this.InputDimensions.Insert(i, pair);
+            }
         }
 
         private bool ShowFinishMessage()
@@ -334,18 +382,74 @@ namespace Pierniczek.ViewModels
 
         private async Task OnCalculateVectorExecute()
         {
-            this.OutputVector = "[" + string.Join(", ", GetPointVector(this.InputX, InputY)) + "]";
+            var values = new List<double>();
+            foreach (var dimension in _dimensions)
+            {
+                var value = InputDimensions.Where(w => w.Key == dimension).First().Value;
+
+                values.Add(value);
+            }
+
+            this.OutputVector = "[" + string.Join(", ", GetPointVector(values)) + "]";
+        }
+
+
+
+        private async Task OnAddVectorColumnExecute()
+        {
+
+            var typeFactory = this.GetTypeFactory();
+
+            var newColumnDataWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<NewColumnDataWindowViewModel>();
+            newColumnDataWindowViewModel.ColumnName = "Vector";
+            if (!await _uiVisualizerService.ShowDialogAsync(newColumnDataWindowViewModel) ?? false)
+            {
+                return;
+            }
+            var newName = newColumnDataWindowViewModel.ColumnName;
+            if (DataModel.Columns.Any(s => s.Name == newName))
+            {
+                await _messageService.ShowErrorAsync("Column name already exist!");
+                return;
+            }
+
+            var column = new ColumnModel()
+            {
+                Name = newName,
+                Type = TypeEnum.String,
+                Use = true
+            };
+            this.DataModel.Columns.Add(column);
+
+            foreach (var row in DataModel.Rows)
+            {
+                var values = new List<double>();
+                foreach (var dimension in _dimensions)
+                {
+                    var value = (double)row[dimension];
+
+                    values.Add(value);
+                }
+                var vector = "[" + string.Join(",", GetPointVector(values)) + "]";
+
+                row[newName] = vector;
+            }
+
+            await _messageService.ShowInformationAsync("Column added!");
         }
 
         private bool GenerateCanExecute()
         {
-            return ColumnX.SelectedColumn != null &&
-                ColumnY.SelectedColumn != null;
+            return true;
+            //DimensionColumns.SelectedColumns != null &&
+            //    DimensionColumns.SelectedColumns.Count > 0 &&
+            //    ColumnClass.SelectedColumn != null;
         }
 
         public TaskCommand Generate { get; private set; }
         public TaskCommand NextStep { get; private set; }
         public TaskCommand Finish { get; private set; }
         public TaskCommand CalculateVector { get; private set; }
+        public TaskCommand AddVectorColumn { get; private set; }
     }
 }
