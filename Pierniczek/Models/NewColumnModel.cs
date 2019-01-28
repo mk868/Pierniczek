@@ -12,14 +12,10 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Pierniczek.ViewModels
+namespace Pierniczek.Models
 {
-    public class SetRangesDataWindowViewModel : ViewModelBase
+    public class NewColumnModel : ViewModelBase
     {
-        public SetRangesDataWindowViewModel()
-        {
-        }
-        
-        public List<RangeModel> Ranges { get; set; }
+        public string ColumnName { get; set; }
     }
 }

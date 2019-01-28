@@ -24,9 +24,22 @@ namespace Pierniczek.Models
             }
             set
             {
-                if (!(value is string || value is double))
-                    throw new NotSupportedException("not supported data format! ");
-                _dictionary[key] = value;
+                if (value is string || value is double)
+                {
+                    _dictionary[key] = value;
+                    return;
+                }
+                if(value is int)
+                {
+                    _dictionary[key] = (double)(int)value;
+                    return;
+                }
+                if(value is char)
+                {
+                    _dictionary[key] = ((char)value).ToString();
+                }
+
+                throw new NotSupportedException("not supported data format! ");
             }
         }
 

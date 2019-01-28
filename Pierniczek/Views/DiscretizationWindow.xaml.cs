@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Pierniczek.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DiscretizationWindow.xaml
     /// </summary>
-    public partial class SetRangesDataWindow
+    public partial class DiscretizationWindow
     {
-        public SetRangesDataWindow()
+        public DiscretizationWindow()
         {
             InitializeComponent();
         }

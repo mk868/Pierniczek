@@ -401,7 +401,7 @@ namespace Pierniczek.ViewModels
             var typeFactory = this.GetTypeFactory();
 
             var newColumnDataWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<NewColumnDataWindowViewModel>();
-            newColumnDataWindowViewModel.ColumnName = "Vector";
+            newColumnDataWindowViewModel.ColumnName = "Vector_";
             if (!await _uiVisualizerService.ShowDialogAsync(newColumnDataWindowViewModel) ?? false)
             {
                 return;
@@ -413,13 +413,17 @@ namespace Pierniczek.ViewModels
                 return;
             }
 
-            var column = new ColumnModel()
+
+            for (var i = 0; i < this.Lines.Count; i++)
             {
-                Name = newName,
-                Type = TypeEnum.String,
-                Use = true
-            };
-            this.DataModel.Columns.Add(column);
+                var column = new ColumnModel()
+                {
+                    Name = newName + i,
+                    Type = TypeEnum.Number,
+                    Use = true
+                };
+                this.DataModel.Columns.Add(column);
+            }
 
             foreach (var row in DataModel.Rows)
             {
@@ -430,12 +434,15 @@ namespace Pierniczek.ViewModels
 
                     values.Add(value);
                 }
-                var vector = "[" + string.Join(",", GetPointVector(values)) + "]";
+                var vector = GetPointVector(values);
 
-                row[newName] = vector;
+                for (var i = 0; i < this.Lines.Count; i++)
+                {
+                    row[newName + i] = vector[i];
+                }
             }
 
-            await _messageService.ShowInformationAsync("Column added!");
+            await _messageService.ShowInformationAsync("Columns added!");
         }
 
         private bool GenerateCanExecute()

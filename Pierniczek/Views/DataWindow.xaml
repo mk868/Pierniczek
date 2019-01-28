@@ -33,7 +33,6 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Number Conversion">
                     <RibbonMenuItem Header="New Range" Command="{Binding NewRange}" />
-                    <RibbonMenuItem Header="Discretization" Command="{Binding Discretization}" />
                     <RibbonMenuItem Header="Normalization" Command="{Binding Normalization}" />
                 </RibbonGroup>
                 <RibbonGroup Header="Grouping">
@@ -46,12 +45,16 @@
                     <RibbonMenuItem Header="K-nn leave-one-out" Command="{Binding KnnLOO}" />
                 </RibbonGroup>
             </RibbonTab>
-            <RibbonTab Header="Actions.old">
+            <RibbonTab Header="Actions">
+                <RibbonGroup Header="Conversion">
+                    <RibbonMenuItem Header="Discretization" Command="{Binding Discretization}" />
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Show">
                 <RibbonGroup Header="2D">
                     <RibbonMenuItem Header="Scatter" Command="{Binding Scatter}" />
                     <RibbonMenuItem Header="Binary Vector By Class" Command="{Binding BinaryVectorByClass}" />
+                    <RibbonMenuItem Header="Create Decision Tree" Command="{Binding CreateDecisionTree}" />
                 </RibbonGroup>
                 <RibbonGroup Header="3D">
                     <RibbonMenuItem Header="Plot3D" Command="{Binding Plot3D}" />

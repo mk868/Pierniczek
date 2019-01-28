@@ -60,14 +60,16 @@ namespace Pierniczek
             //uiVisualizerService.Register<MainWindowViewModel, MainWindow>();
             uiVisualizerService.Register<ScatterWindowViewModel, ScatterWindow>();
             uiVisualizerService.Register<BinaryVectorByClassWindowViewModel, BinaryVectorByClassWindow>();
+            uiVisualizerService.Register<CreateDecisionTreeWindowViewModel, CreateDecisionTreeWindow>();
 
+            uiVisualizerService.Register<NewColumnViewModel, NewColumnView>();
             uiVisualizerService.Register<SelectColumnViewModel, SelectColumnView>();
             uiVisualizerService.Register<SelectColumnsViewModel, SelectColumnsView>();
             uiVisualizerService.Register<OpenFileWindowViewModel, OpenFileWindow>();
             uiVisualizerService.Register<NewColumnDataWindowViewModel, NewColumnDataWindow>();
             uiVisualizerService.Register<SelectColumnDataWindowViewModel, SelectColumnDataWindow>();
             uiVisualizerService.Register<NewRangeDataWindowViewModel, NewRangeDataWindow>();
-            uiVisualizerService.Register<SetRangesDataWindowViewModel, SetRangesDataWindow>();
+            uiVisualizerService.Register<DiscretizationWindowViewModel, DiscretizationWindow>();
             uiVisualizerService.Register<PercentWindowViewModel, PercentWindow>();
             uiVisualizerService.Register<SetPercentWindowViewModel, SetPercentWindow>();
             uiVisualizerService.Register<KnnWindowViewModel, KnnWindow>();

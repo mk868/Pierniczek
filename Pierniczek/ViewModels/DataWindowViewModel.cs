@@ -39,7 +39,8 @@ namespace Pierniczek.ViewModels
             //GroupAlphabetically = new TaskCommand(OnGroupAlphabeticallyExecute, DataOperationsCanExecute);
             //GroupByOrder = new TaskCommand(OnGroupByOrderExecute, DataOperationsCanExecute);
             //NewRange = new TaskCommand(OnNewRangeExecute, DataOperationsCanExecute);
-            //Discretization = new TaskCommand(OnDiscretizationExecute, DataOperationsCanExecute);
+            Discretization = new TaskCommand(OnDiscretizationExecute, DataOperationsCanExecute);
+            CreateDecisionTree = new TaskCommand(OnCreateDecisionTreeExecute, DataOperationsCanExecute);
             //Normalization = new TaskCommand(OnNormalizationExecute, DataOperationsCanExecute);
             //ShowPercent = new TaskCommand(OnShowPercentExecute, DataOperationsCanExecute);
             Scatter = new TaskCommand(OnScatterExecute, DataOperationsCanExecute);
@@ -74,6 +75,19 @@ namespace Pierniczek.ViewModels
             }
         }
 
+        private async Task OnDiscretizationExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+            var discretizationWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<DiscretizationWindowViewModel>(Data);
+            await _uiVisualizerService.ShowDialogAsync(discretizationWindowViewModel);
+        }
+
+        private async Task OnCreateDecisionTreeExecute()
+        {
+            var typeFactory = this.GetTypeFactory();
+            var createDecisionTreeWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<CreateDecisionTreeWindowViewModel>(Data);
+            await _uiVisualizerService.ShowDialogAsync(createDecisionTreeWindowViewModel);
+        }
 
         //private async Task OnNewRangeExecute()
         //{
@@ -162,37 +176,6 @@ namespace Pierniczek.ViewModels
         //    SetColumns(_columns);
         //}
 
-        //private async Task OnDiscretizationExecute()
-        //{
-        //    var typeFactory = this.GetTypeFactory();
-
-        //    var column = await SelectColumn(_columns.Where(w => w.Use).Where(s => s.Type == TypeEnum.Number).ToList());
-        //    if (column == null)
-        //    {
-        //        return;
-        //    }
-
-        //    var setRangesDataWindowViewModel = typeFactory.CreateInstanceWithParametersAndAutoCompletion<SetRangesDataWindowViewModel>();
-        //    setRangesDataWindowViewModel.Ranges = new List<RangeModel>();
-        //    if (!await _uiVisualizerService.ShowDialogAsync(setRangesDataWindowViewModel) ?? false)
-        //    {
-        //        return;
-        //    }
-
-        //    var ranges = setRangesDataWindowViewModel.Ranges;
-
-        //    var newName = await CreateColumn(column.Name + "_Discretization");
-        //    if (newName == null)
-        //    {
-        //        return;
-        //    }
-
-        //    var newColumn = CreateColumn(newName, TypeEnum.Number);
-
-        //    Rows = _scaleService.Discretization(Rows, column.Name, newColumn.Name, ranges);
-        //    _columns.Add(newColumn);
-        //    SetColumns(_columns);
-        //}
 
         //private async Task OnNormalizationExecute()
         //{
@@ -387,6 +370,7 @@ namespace Pierniczek.ViewModels
         public TaskCommand GroupByOrder { get; private set; }
         public TaskCommand NewRange { get; private set; }
         public TaskCommand Discretization { get; private set; }
+        public TaskCommand CreateDecisionTree { get; private set; }
         public TaskCommand Normalization { get; private set; }
         public TaskCommand ShowPercent { get; private set; }
         public TaskCommand Scatter { get; private set; }

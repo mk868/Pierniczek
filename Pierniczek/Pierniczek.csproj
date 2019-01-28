@@ -135,8 +135,12 @@
     </ApplicationDefinition>
     <Compile Include="Behaviors\DataGridColumnsBehavior.cs" />
     <Compile Include="Models\BinaryVectorByClassLineModel.cs" />
+    <Compile Include="Models\DecisionTreeLeafModel.cs" />
+    <Compile Include="Models\DecisionTreeBaseModel.cs" />
+    <Compile Include="Models\DecisionTreeNodeModel.cs" />
     <Compile Include="Models\ColumnModel.cs" />
     <Compile Include="Models\FileDataSeparatorEnum.cs" />
+    <Compile Include="Models\NewColumnModel.cs" />
     <Compile Include="Models\PairModel.cs" />
     <Compile Include="Models\SingleDataModel.cs" />
     <Compile Include="Models\DataModel.cs" />
@@ -159,10 +163,12 @@
     <Compile Include="Sphere\ColorPoint3D.cs" />
     <Compile Include="Sphere\RoundMesh3D.cs" />
     <Compile Include="Sphere\SphereGeometry3D.cs" />
+    <Compile Include="ViewModels\CreateDecisionTreeWindowViewModel.cs" />
     <Compile Include="ViewModels\DataViewModel.cs" />
     <Compile Include="ViewModels\KnnLeaveOneOutWindowViewModel.cs" />
     <Compile Include="ViewModels\KInputDataWindowViewModel.cs" />
     <Compile Include="ViewModels\DataWindowViewModel.cs" />
+    <Compile Include="ViewModels\NewColumnViewModel.cs" />
     <Compile Include="ViewModels\PercentWindowViewModel.cs" />
     <Compile Include="ViewModels\KnnWindowViewModel.cs" />
     <Compile Include="ViewModels\Plot3dWindowViewModel.cs" />
@@ -172,11 +178,14 @@
     <Compile Include="ViewModels\SelectKGroupDistanceMethodDataWindowViewModel.cs" />
     <Compile Include="ViewModels\SetPercentWindowViewModel.cs" />
     <Compile Include="ViewModels\ScatterWindowViewModel.cs" />
-    <Compile Include="ViewModels\SetRangesDataWindowViewModel.cs" />
+    <Compile Include="ViewModels\DiscretizationWindowViewModel.cs" />
     <Compile Include="ViewModels\NewRangeDataWindowViewModel.cs" />
     <Compile Include="ViewModels\SelectColumnDataWindowViewModel.cs" />
     <Compile Include="ViewModels\NewColumnDataWindowViewModel.cs" />
     <Compile Include="ViewModels\OpenFileWindowViewModel.cs" />
+    <Compile Include="Views\CreateDecisionTreeWindow.xaml.cs">
+      <DependentUpon>CreateDecisionTreeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\KInputDataWindow.xaml.cs">
       <DependentUpon>KInputDataWindow.xaml</DependentUpon>
     </Compile>
@@ -207,6 +216,10 @@
     <Compile Include="Views\SelectColumnView.xaml.cs">
       <DependentUpon>SelectColumnView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\CreateDecisionTreeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\KnnLeaveOneOutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -259,7 +272,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SetRangesDataWindow.xaml">
+    <Page Include="Views\DiscretizationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -308,8 +321,8 @@
     <Compile Include="Views\ScatterWindow.xaml.cs">
       <DependentUpon>ScatterWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SetRangesDataWindow.xaml.cs">
-      <DependentUpon>SetRangesDataWindow.xaml</DependentUpon>
+    <Compile Include="Views\DiscretizationWindow.xaml.cs">
+      <DependentUpon>DiscretizationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewRangeDataWindow.xaml.cs">
       <DependentUpon>NewRangeDataWindow.xaml</DependentUpon>
